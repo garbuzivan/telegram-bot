@@ -6,5 +6,6 @@
 
 <p>и опубликовать конфигурацию</p>
 
-`php artisan vendor:publish  --force --provider="GarbuzIvan\TelegramBot\TelegramBotServiceProvider" --tag="config"`
+<pre>php artisan vendor:publish  --force --provider="GarbuzIvan\TelegramBot\TelegramBotServiceProvider" --tag="config"</pre>
 
+<pre>`php artisan migrate`</pre>
