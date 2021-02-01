@@ -22,6 +22,8 @@ class TelegramBotServiceProvider extends ServiceProvider
         ], 'config');
 
         $this->loadMigrationsFrom(__DIR__ . '/../migrations');
+
+        include __DIR__.'/routes.php';
     }
 
     /**

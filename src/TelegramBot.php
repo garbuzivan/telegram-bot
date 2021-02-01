@@ -27,4 +27,9 @@ class TelegramBot
         }
     }
 
+    public function webhook()
+    {
+        echo 1;
+        exit();
+    }
 }
