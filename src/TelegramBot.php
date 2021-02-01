@@ -63,14 +63,4 @@ class TelegramBot
     {
 
     }
-
-    public function chats()
-    {
-        dd(TgBotChat::all());
-    }
-
-    public function users()
-    {
-        dd(TgBotUser::all());
-    }
 }
