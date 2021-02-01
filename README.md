@@ -2,7 +2,8 @@
 
 ## Установка
 
-`composer require garbuzivan/telegram-bot`
+<pre>composer require irazasyed/telegram-bot-sdk ^2.0</pre>
+<pre>composer require garbuzivan/telegram-bot</pre>
 
 <p>и опубликовать конфигурацию</p>
 
