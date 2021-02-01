@@ -43,9 +43,13 @@ class Configuration
      */
     public function load(): Configuration
     {
-        $pipes = config($this->configFile . '.pipes');
-        if(is_array($pipes)){
-            $this->setPipes($pipes);
+        $token = config($this->configFile . '.token');
+        if(!is_null($token)){
+            $this->setToken($token);
+        }
+        $commands = config($this->configFile . '.commands');
+        if(is_array($commands)){
+            $this->setCommands($commands);
         }
         return $this;
     }

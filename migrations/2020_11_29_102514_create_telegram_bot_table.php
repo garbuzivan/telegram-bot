@@ -20,7 +20,7 @@ class CreateTelegramBotTable extends Migration
             $table->string('username')->nullable();
             $table->string('first_name')->nullable();
             $table->string('last_name')->nullable();
-            $table->integer('last_time')->default(0); // последняя активность
+            $table->timestamp('last_time')->default(0); // последняя активность
             $table->string('sex')->nullable(); // пол
             $table->integer('message_count')->nullable(); //  количество сообщений
             $table->integer('rank')->nullable(); //  ранк
@@ -45,9 +45,9 @@ class CreateTelegramBotTable extends Migration
             $table->integer('chat_id');
             $table->integer('chat_title')->nullable();
             $table->integer('date')->default(0);
-            $table->integer('reply_message_id');
-            $table->integer('reply_from_id');
-            $table->longText('text');
+            $table->integer('reply_message_id')->nullable();
+            $table->integer('reply_from_id')->nullable();
+            $table->longText('text')->nullable();
             $table->json('json')->nullable();
             $table->timestamps();
         });

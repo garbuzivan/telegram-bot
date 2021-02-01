@@ -2,26 +2,27 @@
 
 declare(strict_types=1);
 
-namespace GarbuzIvan\LaravelAuthApi\Models;
+namespace GarbuzIvan\TelegramBot\Models;
 
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class CodeEmail extends Model
+class TgBotUser extends Model
 {
     use HasFactory;
 
-    protected $table = 'auth_api_email_code';
+    protected $table = 'gi_tb_user';
 
     /**
      * @var array<string> $fillable
      */
     protected $fillable = [
-        'email',
-        'code',
-        'pass',
-        'use',
+        'tg_id',
+        'is_bot',
+        'username',
+        'first_name',
+        'last_name',
+        'title',
     ];
 
     /**
@@ -30,8 +31,8 @@ class CodeEmail extends Model
      * @param $query
      * @return mixed
      */
-    public function scopeListNoUse($query)
+    public function scopeNoBot($query)
     {
-        return $query->where('user', 0);
+        return $query->where('is_bot', 0);
     }
 }
