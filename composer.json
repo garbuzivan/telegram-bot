@@ -1,0 +1,39 @@
+{
+    "name": "garbuzivan/telegram-bot",
+    "description": "Telegram bot",
+    "type": "library",
+    "require": {
+        "irazasyed/telegram-bot-sdk": "^2.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^8.5",
+        "mockery/mockery": ">=1.3"
+    },
+    "authors": [
+        {
+            "name": "Garbuz Ivan",
+            "email": "garbuzivan90@ya.ru"
+        }
+    ],
+    "minimum-stability": "stable",
+    "autoload": {
+        "psr-4": {
+            "GarbuzIvan\\TelegramBot\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "GarbuzIvan\\TelegramBot\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "test": "phpunit"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "GarbuzIvan\\TelegramBot\\TelegramBotServiceProvider"
+            ]
+        }
+    }
+}
