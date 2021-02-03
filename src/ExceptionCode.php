@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace GarbuzIvan\LaravelAuthApi;
+namespace GarbuzIvan\TelegramBot;
 
 class ExceptionCode
 {
