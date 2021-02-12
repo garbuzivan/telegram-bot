@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace GarbuzIvan\TelegramBot;
 
 use GarbuzIvan\TelegramBot\Commands\AbstractCommand;
-use Telegram\Bot\Api;
 use Telegram\Bot\Objects\Update as UpdateObject;
 
 class Configuration
@@ -30,9 +29,9 @@ class Configuration
     protected ?string $token = null;
 
     /**
-     * @var Api
+     * @var TgApiBot
      */
-    public Api $telegram;
+    public TgApiBot $telegram;
 
     /**
      * @var UpdateObject
