@@ -103,22 +103,22 @@ class ParserBot
         return null;
     }
 
-    public function newMessage()
+    public function newMessage(array $message)
     {
-        if (isset($this->config->param['message']['message_id'])) {
-            $messageId = $this->config->param['message']['message_id'];
+        if (isset($message['message_id'])) {
+            $messageId = $message['message_id'];
             $message = TgBotMessage::where('message_id', $messageId)->first();
             if (is_null($message)) {
                 $insert = [
                     'update_id' => $this->config->param['update_id'],
                     'message_id' => $messageId,
-                    'from_id' => $this->config->param['message']['from']['id'],
-                    'chat_id' => $this->config->param['message']['chat']['id'],
-                    'chat_title' => $this->config->param['message']['chat']['title'] ?? null,
-                    'date' => $this->config->param['message']['date'] ?? null,
-                    'reply_message_id' => $this->config->param['message']['reply_to_message']['message_id'] ?? null,
-                    'reply_from_id' => $this->config->param['message']['reply_to_message']['from']['id'] ?? null,
-                    'text' => $this->config->param['message']['text'] ?? null,
+                    'from_id' => $message['from']['id'],
+                    'chat_id' => $message['chat']['id'],
+                    'chat_title' => $message['chat']['title'] ?? null,
+                    'date' => $message['date'] ?? null,
+                    'reply_message_id' => $message['reply_to_message']['message_id'] ?? null,
+                    'reply_from_id' => $message['reply_to_message']['from']['id'] ?? null,
+                    'text' => $message['text'] ?? null,
                     'json' => json_encode($this->config->param),
                 ];
                 return TgBotMessage::insert($insert);

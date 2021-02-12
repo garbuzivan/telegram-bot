@@ -61,7 +61,7 @@ class TelegramBot
             'text' => json_encode($this->config->param)
         ]);
         $this->chat = $parser->getChat();
-        $this->message = $parser->newMessage();
+        $this->message = $parser->newMessage($this->config->param['message']);
         exit();
     }
 
