@@ -86,7 +86,7 @@ class ParserBot
     public function getChat(): ?TgBotChat
     {
         if (request()->has('message.chat.id')) {
-            $chatID = request()->input('message.chat');
+            $chatID = request()->input('message.chat.id');
             $chatTitle = request()->input('message.chat.title');
             $chat = TgBotChat::where('chat_id', $chatID)->first();
             if (is_null($chat)) {
