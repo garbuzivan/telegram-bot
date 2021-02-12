@@ -31,6 +31,6 @@ class Web extends Controller
 
     public function users()
     {
-        dd(TgBotUser::all());
+        dd(public_path(), TgBotUser::all());
     }
 }
