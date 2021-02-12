@@ -109,8 +109,8 @@ class ParserBot
     {
         if (isset($message['message_id'])) {
             $messageId = $message['message_id'];
-            $message = TgBotMessage::where('message_id', $messageId)->first();
-            if (is_null($message)) {
+            $messageDB = TgBotMessage::where('message_id', $messageId)->first();
+            if (is_null($messageDB)) {
                 $insert = [
                     'update_id' => $update_id,
                     'message_id' => $messageId,
@@ -123,17 +123,12 @@ class ParserBot
                     'text' => $message['text'] ?? null,
                     'json' => json_encode($this->config->param),
                 ];
-                try {
-                    TgBotMessage::insert($insert);
-                } catch (\Exception $e) {
-                    file_put_contents(public_path('tg.tmp'), json_encode([$e->getMessage(), $e->getCode(), $e->getFile(), $e->getLine()]) . "\n\n", 8);
-                }
-
-//                TgBotUser::where('tg_id', $message['from']['id'])
-//                    ->update([
-//                        //'message_count' => DB::raw('message_count+1'),
-//                        'last_time' => Carbon::now()
-//                    ]);
+                TgBotMessage::insert($insert);
+                TgBotUser::where('tg_id', $message['from']['id'])
+                    ->update([
+                        'message_count' => DB::raw('message_count+1'),
+                        'last_time' => Carbon::now()
+                    ]);
             }
         }
         return false;
