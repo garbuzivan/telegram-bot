@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace GarbuzIvan\TelegramBot;
 
+use Carbon\Carbon;
 use GarbuzIvan\TelegramBot\Models\TgBotChat;
 use GarbuzIvan\TelegramBot\Models\TgBotMessage;
 use GarbuzIvan\TelegramBot\Models\TgBotUser;
