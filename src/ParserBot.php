@@ -121,7 +121,7 @@ class ParserBot
                     'text' => $this->config->param['message']['text'] ?? null,
                     'json' => json_encode($this->config->param),
                 ];
-                return TgBotChat::create($insert);
+                return TgBotMessage::create($insert);
             }
         }
         return null;
