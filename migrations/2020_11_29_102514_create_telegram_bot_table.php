@@ -34,7 +34,7 @@ class CreateTelegramBotTable extends Migration
         Schema::create('gi_tb_chats', function (Blueprint $table) {
             $table->id();
             $table->integer('chat_id');
-            $table->integer('chat_title')->nullable();
+            $table->string('chat_title')->nullable();
         });
 
         Schema::create('gi_tb_messages', function (Blueprint $table) {
@@ -43,7 +43,7 @@ class CreateTelegramBotTable extends Migration
             $table->integer('message_id');
             $table->integer('from_id');
             $table->integer('chat_id');
-            $table->integer('chat_title')->nullable();
+            $table->string('chat_title')->nullable();
             $table->integer('date')->default(0);
             $table->integer('reply_message_id')->nullable();
             $table->integer('reply_from_id')->nullable();
