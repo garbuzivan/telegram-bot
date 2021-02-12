@@ -103,7 +103,7 @@ class ParserBot
         return null;
     }
 
-    public function newMessage(array $message)
+    public function newMessage(array $message): bool
     {
         if (isset($message['message_id'])) {
             $messageId = $message['message_id'];
@@ -121,10 +121,11 @@ class ParserBot
                     'text' => $message['text'] ?? null,
                     'json' => json_encode($this->config->param),
                 ];
-                return TgBotMessage::insert($insert);
+                TgBotMessage::insert($insert);
+                TgBotUser::find($message['from']['id'])->increment('message_count');
             }
         }
-        return null;
+        return false;
     }
 
 }
