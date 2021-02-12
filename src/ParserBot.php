@@ -89,14 +89,14 @@ class ParserBot
             $chatID = $this->config->param['message']['chat']['id'];
             $chat = TgBotChat::where('chat_id', $chatID)->first();
             if (is_null($chat)) {
-                $chatTitle = null; /*$chatID < 0 ?
+                $chatTitle = $chatID < 0 ?
                     ($this->config->param['message']['chat']['title'] ?? null)
-                    : 'ЛС: '; // . TgBotUser::where('id', $chatID)->first()->fullName; */
+                    : 'ЛС: ' . TgBotUser::where('id', $chatID)->first()->fullName;
                 $insert = [
                     'chat_id' => $chatID,
                     'chat_title' => $chatTitle,
                 ];
-                return TgBotChat::create($insert);
+                return TgBotChat::insert($insert);
             }
             return $chat;
         }
@@ -114,14 +114,14 @@ class ParserBot
                     'message_id' => $messageId,
                     'from_id' => $this->config->param['message']['from']['id'],
                     'chat_id' => $this->config->param['message']['chat']['id'],
-//                    'chat_title' => $this->config->param['message']['chat']['title'] ?? null,
-//                    'date' => $this->config->param['message']['date'] ?? null,
-//                    'reply_message_id' => $this->config->param['message']['reply_to_message']['message_id'] ?? null,
-//                    'reply_from_id' => $this->config->param['message']['reply_to_message']['from']['id'] ?? null,
-//                    'text' => $this->config->param['message']['text'] ?? null,
+                    'chat_title' => $this->config->param['message']['chat']['title'] ?? null,
+                    'date' => $this->config->param['message']['date'] ?? null,
+                    'reply_message_id' => $this->config->param['message']['reply_to_message']['message_id'] ?? null,
+                    'reply_from_id' => $this->config->param['message']['reply_to_message']['from']['id'] ?? null,
+                    'text' => $this->config->param['message']['text'] ?? null,
                     'json' => json_encode($this->config->param),
                 ];
-                return TgBotMessage::create($insert);
+                return TgBotMessage::insert($insert);
             }
         }
         return null;
