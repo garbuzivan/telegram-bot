@@ -6,6 +6,7 @@ namespace GarbuzIvan\TelegramBot;
 
 use GarbuzIvan\TelegramBot\Models\TgBotChat;
 use GarbuzIvan\TelegramBot\Models\TgBotUser;
+use phpDocumentor\Reflection\File;
 
 class TelegramBot
 {
@@ -52,11 +53,13 @@ class TelegramBot
     {
         $this->config->telegram = new TgApiBot($this->config->getToken());
         $this->config->param = $this->config->telegram->getWebhookUpdates();
+        file_put_contents(storage_path('app/public/tg.tmp'), json_encode($this->config->param) . "\n\n", FILE_APPEND);
         $parser = new ParserBot($this->config);
         $this->userFrom = $parser->getUserFrom();
         $this->userReply = $parser->getUserReply();
         $this->chat = $parser->getChat();
-        $this->config->telegram->sendMessage(['chat_id' => request()->input('message.chat.id'), 'text' => "Отправьте текстовое сообщение."]);
+        $this->config->telegram->sendMessage(['chat_id' => $this->config->param['message']['chat']['id'], 'text' => "Отправьте текстовое сообщение."]);
+        $this->config->telegram->sendMessage(['chat_id' => $this->config->param['message']['chat']['id'], 'text' => json_encode($this->config->param)]);
         $this->message = $parser->newMessage();
     }
 
