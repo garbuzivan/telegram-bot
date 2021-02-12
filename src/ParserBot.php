@@ -36,8 +36,8 @@ class ParserBot
      */
     public function getUserFrom(): ?TgBotUser
     {
-        if (request()->has('message.from.id')) {
-            $from = request()->input('message.from');
+        if (isset($this->config->param['message']['from']['id'])) {
+            $from = $this->config->param['message']['from'];
             return $this->firstOrCreate($from);
         }
         return null;
@@ -50,8 +50,8 @@ class ParserBot
      */
     public function getUserReply(): ?TgBotUser
     {
-        if (request()->has('message.reply_to_message.from.id')) {
-            $from = request()->input('message.reply_to_message.from');
+        if (isset($this->config->param['message']['reply_to_message']['from']['id'])) {
+            $from = $this->config->param['message']['reply_to_message']['from'];
             return $this->firstOrCreate($from);
         }
         return null;
@@ -85,12 +85,12 @@ class ParserBot
      */
     public function getChat(): ?TgBotChat
     {
-        if (request()->has('message.chat.id')) {
-            $chatID = request()->input('message.chat.id');
+        if (isset($this->config->param['message']['chat']['id'])) {
+            $chatID = $this->config->param['message']['chat']['id'];
             $chat = TgBotChat::where('chat_id', $chatID)->first();
             if (is_null($chat)) {
                 $chatTitle = $chatID < 0 ?
-                    request()->input('message.chat.title')
+                    $this->config->param['message']['chat']['title']
                     : 'ЛС: ' . TgBotUser::where('id', $chatID)->first()->fullName;
                 $insert = [
                     'chat_id' => $chatID,
@@ -105,21 +105,21 @@ class ParserBot
 
     public function newMessage()
     {
-        if (request()->has('message.message_id')) {
-            $messageId = request()->input('message.message_id');
+        if (isset($this->config->param['message']['message_id'])) {
+            $messageId = $this->config->param['message']['message_id'];
             $message = TgBotMessage::where('message_id', $messageId)->first();
             if (is_null($message)) {
                 $insert = [
-                    'update_id' => request()->input('update_id'),
+                    'update_id' => $this->config->param['update_id'],
                     'message_id' => $messageId,
-                    'from_id' => request()->input('message.from.id'),
-                    'chat_id' => request()->input('message.chat.id'),
-                    'chat_title' => request()->input('message.chat.title') ?? null,
-                    'date' => request()->input('message.date') ?? null,
-                    'reply_message_id' => request()->input('message.reply_to_message.message_id') ?? null,
-                    'reply_from_id' => request()->input('message.reply_to_message.from.id') ?? null,
-                    'text' => request()->input('message.text') ?? null,
-                    'json' => json_encode(request()->all()),
+                    'from_id' => $this->config->param['message']['from']['id'],
+                    'chat_id' => $this->config->param['message']['chat']['id'],
+                    'chat_title' => $this->config->param['message']['chat']['title'] ?? null,
+                    'date' => $this->config->param['message']['date'] ?? null,
+                    'reply_message_id' => $this->config->param['message']['reply_to_message']['message_id'] ?? null,
+                    'reply_from_id' => $this->config->param['message']['reply_to_message']['from']['id'] ?? null,
+                    'text' => $this->config->param['message']['text'] ?? null,
+                    'json' => json_encode($this->config->param),
                 ];
                 return TgBotChat::create($insert);
             }

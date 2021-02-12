@@ -51,11 +51,12 @@ class TelegramBot
     public function webhook()
     {
         $this->config->telegram = new TgApiBot($this->config->getToken());
+        $this->config->param = $this->config->telegram->getWebhookUpdates();
         $parser = new ParserBot($this->config);
         $this->userFrom = $parser->getUserFrom();
         $this->userReply = $parser->getUserReply();
         $this->chat = $parser->getChat();
-        $this->config->telegram->sendMessage(request()->input('message.chat.id', ));
+        $this->config->telegram->sendMessage(['chat_id' => request()->input('message.chat.id'), 'text' => "Отправьте текстовое сообщение."]);
         $this->message = $parser->newMessage();
     }
 

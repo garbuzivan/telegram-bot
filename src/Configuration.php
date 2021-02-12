@@ -34,6 +34,11 @@ class Configuration
     public Api $telegram;
 
     /**
+     * @var array
+     */
+    public array $param;
+
+    /**
      * Configuration constructor.
      * @param Configuration|null $config
      */
