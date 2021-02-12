@@ -123,7 +123,8 @@ class ParserBot
                     'json' => json_encode($this->config->param),
                 ];
                 TgBotMessage::insert($insert);
-                TgBotUser::find($message['from']['id'])->increment('message_count', 1, ['last_time' => Carbon::now()]);
+                TgBotUser::find($message['from']['id'])
+                    ->increment('message_count', 1, ['last_time' => Carbon::now()]);
             }
         }
         return false;
