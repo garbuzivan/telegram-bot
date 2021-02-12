@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace GarbuzIvan\TelegramBot;
 
 use GarbuzIvan\TelegramBot\Commands\AbstractCommand;
+use Telegram\Bot\Api;
 
 class Configuration
 {
@@ -26,6 +27,11 @@ class Configuration
      * @var ?string
      */
     protected ?string $token = null;
+
+    /**
+     * @var Api
+     */
+    public Api $telegram;
 
     /**
      * Configuration constructor.

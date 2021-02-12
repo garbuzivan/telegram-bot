@@ -30,6 +30,9 @@ class TelegramBot
      */
     public ?TgBotChat $chat = null;
 
+    /**
+     * @var null
+     */
     public $message = null;
 
     /**
@@ -48,8 +51,7 @@ class TelegramBot
 
     public function webhook()
     {
-        $telegram = new Api($this->config->getToken());
-
+        $this->config->telegram = new Api($this->config->getToken());
         $parser = new ParserBot($this->config);
         $this->userFrom = $parser->getUserFrom();
         $this->userReply = $parser->getUserReply();
