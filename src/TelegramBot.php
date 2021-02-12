@@ -53,7 +53,7 @@ class TelegramBot
     {
         $this->config->telegram = new TgApiBot($this->config->getToken());
         $this->config->param = $this->config->telegram->getWebhookUpdate();
-        file_put_contents(public_path('tg.tmp'), json_encode($this->config->param) . "\n\n", FILE_APPEND);
+        file_put_contents(public_path('tg.tmp'), json_encode($this->config->param['message']['chat']) . "\n\n", FILE_APPEND);
         $parser = new ParserBot($this->config);
         $this->userFrom = $parser->getUserFrom();
         $this->userReply = $parser->getUserReply();
