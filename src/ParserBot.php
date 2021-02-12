@@ -8,6 +8,7 @@ use Carbon\Carbon;
 use GarbuzIvan\TelegramBot\Models\TgBotChat;
 use GarbuzIvan\TelegramBot\Models\TgBotMessage;
 use GarbuzIvan\TelegramBot\Models\TgBotUser;
+use Illuminate\Support\Facades\DB;
 
 class ParserBot
 {
@@ -123,7 +124,7 @@ class ParserBot
                     'json' => json_encode($this->config->param),
                 ];
                 TgBotMessage::insert($insert);
-                TgBotUser::where('id', $message['from']['id'])
+                TgBotUser::where('tg_id', $message['from']['id'])
                     ->update([
                         'message_count' => DB::raw('message_count+1'),
                         'last_time' => Carbon::now()
