@@ -112,8 +112,8 @@ class ParserBot
                 $insert = [
                     'update_id' => $this->config->param['update_id'],
                     'message_id' => $messageId,
-//                    'from_id' => $this->config->param['message']['from']['id'],
-//                    'chat_id' => $this->config->param['message']['chat']['id'],
+                    'from_id' => $this->config->param['message']['from']['id'],
+                    'chat_id' => $this->config->param['message']['chat']['id'],
 //                    'chat_title' => $this->config->param['message']['chat']['title'] ?? null,
 //                    'date' => $this->config->param['message']['date'] ?? null,
 //                    'reply_message_id' => $this->config->param['message']['reply_to_message']['message_id'] ?? null,
