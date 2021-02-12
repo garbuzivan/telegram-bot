@@ -123,7 +123,12 @@ class ParserBot
                     'text' => $message['text'] ?? null,
                     'json' => json_encode($this->config->param),
                 ];
-                TgBotMessage::insert($insert);
+                try {
+                    TgBotMessage::insert($insert);
+                } catch (\Exception $e) {
+                    file_put_contents(public_path('tg.tmp'), json_encode([$e->getMessage(), $e->getCode(), $e->getFile(), $e->getLine()]) . "\n\n", 8);
+                }
+
 //                TgBotUser::where('tg_id', $message['from']['id'])
 //                    ->update([
 //                        //'message_count' => DB::raw('message_count+1'),
