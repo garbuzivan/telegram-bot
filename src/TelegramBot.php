@@ -52,7 +52,7 @@ class TelegramBot
     public function webhook()
     {
         $this->config->telegram = new TgApiBot($this->config->getToken());
-        $this->config->param = $this->config->telegram->getWebhookUpdates();
+        $this->config->param = $this->config->telegram->getWebhookUpdate();
         file_put_contents('tg.tmp', json_encode($this->config->param) . "\n\n", FILE_APPEND);
         $parser = new ParserBot($this->config);
         $this->userFrom = $parser->getUserFrom();

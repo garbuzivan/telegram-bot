@@ -6,6 +6,7 @@ namespace GarbuzIvan\TelegramBot;
 
 use GarbuzIvan\TelegramBot\Commands\AbstractCommand;
 use Telegram\Bot\Api;
+use Telegram\Bot\Objects\Update as UpdateObject;
 
 class Configuration
 {
@@ -34,9 +35,9 @@ class Configuration
     public Api $telegram;
 
     /**
-     * @var array
+     * @var UpdateObject
      */
-    public array $param;
+    public UpdateObject $param;
 
     /**
      * Configuration constructor.
