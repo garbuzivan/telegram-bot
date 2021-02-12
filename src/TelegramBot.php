@@ -61,6 +61,8 @@ class TelegramBot
         $this->config->telegram->sendMessage(['chat_id' => $this->config->param['message']['chat']['id'], 'text' => "Отправьте текстовое сообщение."]);
         $this->config->telegram->sendMessage(['chat_id' => $this->config->param['message']['chat']['id'], 'text' => json_encode($this->config->param)]);
         $this->message = $parser->newMessage();
+
+        exit();
     }
 
     public function message()
