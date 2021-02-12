@@ -62,6 +62,7 @@ class TelegramBot
         ]);
         $this->chat = $parser->getChat();
         $this->message = $parser->newMessage();
+        exit();
     }
 
     public function message()
