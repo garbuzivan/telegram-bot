@@ -20,7 +20,7 @@ class CreateTelegramBotTable extends Migration
             $table->string('username')->nullable();
             $table->string('first_name')->nullable();
             $table->string('last_name')->nullable();
-            $table->timestamp('last_time')->default(0); // последняя активность
+            $table->timestamp('last_time')->nullable(); // последняя активность
             $table->string('sex')->nullable(); // пол
             $table->integer('message_count')->nullable(); //  количество сообщений
             $table->integer('rank')->nullable(); //  ранк
