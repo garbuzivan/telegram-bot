@@ -22,7 +22,7 @@ class CreateTelegramBotTable extends Migration
             $table->string('last_name')->nullable();
             $table->timestamp('last_time')->nullable(); // последняя активность
             $table->string('sex')->nullable(); // пол
-            $table->integer('message_count')->nullable(); //  количество сообщений
+            $table->integer('message_count')->default(0); //  количество сообщений
             $table->integer('rank')->nullable(); //  ранк
             $table->integer('penis')->nullable(); // пенис
             $table->integer('boobs')->nullable(); // сиськи

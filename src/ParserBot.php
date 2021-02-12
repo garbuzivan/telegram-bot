@@ -105,30 +105,30 @@ class ParserBot
         return null;
     }
 
-    public function newMessage(array $message): bool
+    public function newMessage(array $message, $update_id = 0): bool
     {
         if (isset($message['message_id'])) {
             $messageId = $message['message_id'];
             $message = TgBotMessage::where('message_id', $messageId)->first();
             if (is_null($message)) {
                 $insert = [
-                    'update_id' => $this->config->param['update_id'],
+                    'update_id' => $update_id,
                     'message_id' => $messageId,
                     'from_id' => $message['from']['id'],
                     'chat_id' => $message['chat']['id'],
                     'chat_title' => $message['chat']['title'] ?? null,
-                    'date' => $message['date'] ?? null,
+                    'date' => $message['date'] ?? 0,
                     'reply_message_id' => $message['reply_to_message']['message_id'] ?? null,
                     'reply_from_id' => $message['reply_to_message']['from']['id'] ?? null,
                     'text' => $message['text'] ?? null,
                     'json' => json_encode($this->config->param),
                 ];
                 TgBotMessage::insert($insert);
-                TgBotUser::where('tg_id', $message['from']['id'])
-                    ->update([
-                        'message_count' => DB::raw('message_count+1'),
-                        'last_time' => Carbon::now()
-                    ]);
+//                TgBotUser::where('tg_id', $message['from']['id'])
+//                    ->update([
+//                        //'message_count' => DB::raw('message_count+1'),
+//                        'last_time' => Carbon::now()
+//                    ]);
             }
         }
         return false;
