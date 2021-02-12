@@ -87,9 +87,11 @@ class ParserBot
     {
         if (request()->has('message.chat.id')) {
             $chatID = request()->input('message.chat.id');
-            $chatTitle = request()->input('message.chat.title');
             $chat = TgBotChat::where('chat_id', $chatID)->first();
             if (is_null($chat)) {
+                $chatTitle = $chatID < 0 ?
+                    request()->input('message.chat.title')
+                    : TgBotUser::where('id', $chatID)->first()->fullName;
                 $insert = [
                     'chat_id' => $chatID,
                     'chat_title' => $chatTitle,

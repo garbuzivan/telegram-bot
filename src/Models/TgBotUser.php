@@ -35,4 +35,12 @@ class TgBotUser extends Model
     {
         return $query->where('is_bot', 0);
     }
+
+    /**
+     * @return string
+     */
+    public function fullName(): string
+    {
+        return ucfirst($this->first_name) . ' ' . ucfirst($this->last_name);
+    }
 }
