@@ -6,7 +6,6 @@ namespace GarbuzIvan\TelegramBot;
 
 use GarbuzIvan\TelegramBot\Models\TgBotChat;
 use GarbuzIvan\TelegramBot\Models\TgBotUser;
-use Telegram\Bot\Api;
 
 class TelegramBot
 {
@@ -51,11 +50,12 @@ class TelegramBot
 
     public function webhook()
     {
-        $this->config->telegram = new Api($this->config->getToken());
+        $this->config->telegram = new TgApiBot($this->config->getToken());
         $parser = new ParserBot($this->config);
         $this->userFrom = $parser->getUserFrom();
         $this->userReply = $parser->getUserReply();
         $this->chat = $parser->getChat();
+        $this->config->telegram->sendMessage(request()->input('message.chat.id', ));
         $this->message = $parser->newMessage();
     }
 
