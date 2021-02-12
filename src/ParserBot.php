@@ -90,7 +90,7 @@ class ParserBot
             $chat = TgBotChat::where('chat_id', $chatID)->first();
             if (is_null($chat)) {
                 $chatTitle = $chatID < 0 ?
-                    $this->config->param['message']['chat']['title']
+                    ($this->config->param['message']['chat']['title'] ?? null)
                     : 'ЛС: ' . TgBotUser::where('id', $chatID)->first()->fullName;
                 $insert = [
                     'chat_id' => $chatID,
