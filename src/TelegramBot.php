@@ -53,15 +53,11 @@ class TelegramBot
     {
         $this->config->telegram = new TgApiBot($this->config->getToken());
         $this->config->param = $this->config->telegram->getWebhookUpdate();
-        file_put_contents(public_path('tg.tmp'), json_encode($this->config->param['message']['chat']) . "\n\n", FILE_APPEND);
         $parser = new ParserBot($this->config);
         $this->userFrom = $parser->getUserFrom();
         $this->userReply = $parser->getUserReply();
-        //$this->config->telegram->sendMessage(['chat_id' => $this->config->param['message']['chat']['id'], 'text' => "Отправьте текстовое сообщение."]);
-        //$this->config->telegram->sendMessage(['chat_id' => $this->config->param['message']['chat']['id'], 'text' => json_encode($this->config->param)]);
         $this->chat = $parser->getChat();
         $this->message = $parser->newMessage();
-        exit();
     }
 
     public function message()
