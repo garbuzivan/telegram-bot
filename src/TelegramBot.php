@@ -52,7 +52,10 @@ class TelegramBot
     public function webhook()
     {
         TgSession::setApi($this->config);
-        exit();
+        TgSession::getApi()->addCommands([
+            \GarbuzIvan\TelegramBot\Commands\Start::class,
+        ]);
+        TgSession::getApi()->commandsHandler(true);
     }
 
     public function message()
