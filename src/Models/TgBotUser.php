@@ -27,11 +27,6 @@ class TgBotUser extends Model
         'title',
     ];
 
-    protected $appends = [
-        'full_name',
-        'active_bonus',
-    ];
-
     /**
      * Get a list of unused codes sent by email
      *
@@ -46,7 +41,7 @@ class TgBotUser extends Model
     /**
      * @return string
      */
-    public function getFullNameAttribute()
+    public function full_name()
     {
         return ucwords($this->first_name . ' ' . $this->last_name);
     }
@@ -55,7 +50,7 @@ class TgBotUser extends Model
         return $this->hasOne('\GarbuzIvan\TelegramBot\Models\TgBotBonus', 'tg_id', 'user_id');
     }
 
-    public function getActiveBonusAttributes()
+    public function active_bonus()
     {
         if(!isset($this->bonus) || is_null($this->bonus) || !isset($this->bonus->created_at)){
             return false;
