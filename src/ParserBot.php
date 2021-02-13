@@ -57,8 +57,8 @@ class ParserBot
         $chat = TgSession::getParam('message.chat');
         if (isset($chat['id'])) {
             $chatID = $chat['id'];
-            $chat = TgBotChat::where('chat_id', $chatID)->first();
-            if (is_null($chat)) {
+            $chatDB = TgBotChat::where('chat_id', $chatID)->first();
+            if (is_null($chatDB)) {
                 $chatTitle = $chatID < 0 ?
                     ($chat['title'] ?? null)
                     : 'ЛС: ' . TgSession::getUser()->full_name;
@@ -68,7 +68,7 @@ class ParserBot
                 ];
                 return TgBotChat::create($insert);
             }
-            return $chat;
+            return $chatDB;
         }
         return null;
     }
