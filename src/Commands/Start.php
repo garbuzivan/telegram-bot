@@ -29,7 +29,7 @@ class Start extends Command
         // `replyWith<Message|Photo|Audio|Video|Voice|Document|Sticker|Location|ChatAction>()` all the available methods are dynamically
         // handled when you replace `send<Method>` with `replyWith` and use the same parameters - except chat_id does NOT need to be included in the array.
         TgSession::getApi()->sendMessage([
-            'chat_id' => self::getParam('message.chat.id'),
+            'chat_id' => TgSession::getParam('message.chat.id'),
             'text' => 'Император ЯН приветствует тебя',
         ]);
 
@@ -49,7 +49,7 @@ class Start extends Command
 
         // Reply with the commands list
         TgSession::getApi()->sendMessage([
-            'chat_id' => self::getParam('message.chat.id'),
+            'chat_id' => TgSession::getParam('message.chat.id'),
             'text' => $response,
         ]);
 
