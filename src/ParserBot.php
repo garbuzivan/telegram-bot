@@ -62,7 +62,7 @@ class ParserBot
             if (is_null($chatDB)) {
                 $chatTitle = $chatID < 0 ?
                     ($chat['title'] ?? null)
-                    : 'ЛС: ' . TgSession::getUser()->full_name;
+                    : 'ЛС: ' . TgSession::getUser()->name;
                 $insert = [
                     'chat_id' => $chatID,
                     'chat_title' => $chatTitle,

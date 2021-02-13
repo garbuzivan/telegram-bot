@@ -41,7 +41,7 @@ class TgBotUser extends Model
     /**
      * @return string
      */
-    public function full_name()
+    public function name()
     {
         return ucwords($this->first_name . ' ' . $this->last_name);
     }
