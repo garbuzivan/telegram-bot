@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace GarbuzIvan\TelegramBot\Models;
 
-use DateTime;
-use Illuminate\Database\Query\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
