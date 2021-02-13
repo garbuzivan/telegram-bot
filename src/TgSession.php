@@ -155,7 +155,7 @@ class TgSession
         try {
             self::getApi()->sendMessage([
                 'chat_id' => self::getParam('message.chat.id'),
-                'text' => self::getParam()
+                'text' => json_encode(self::getParam())
             ]);
         } catch (TelegramSDKException $e){
 
