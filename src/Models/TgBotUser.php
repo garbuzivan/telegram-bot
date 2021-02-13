@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace GarbuzIvan\TelegramBot\Models;
 
+use DateTime;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -28,6 +29,7 @@ class TgBotUser extends Model
 
     protected $appends = [
         'full_name',
+        'active_bonus',
     ];
 
     /**
@@ -47,5 +49,20 @@ class TgBotUser extends Model
     public function getFullNameAttribute()
     {
         return ucwords($this->first_name . ' ' . $this->last_name);
+    }
+
+    public function bonus(){
+        return $this->hasOne('\GarbuzIvan\TelegramBot\Models\TgBotBonus', 'tg_id', 'user_id');
+    }
+
+    public function getActiveBonusAttributes()
+    {
+        if(!isset($this->bonus) || is_null($this->bonus) || !isset($this->bonus->created_at)){
+            return false;
+        }
+//        $first = DateTime::createFromFormat('d.m.Y', '01.01.2016');
+//        $second = DateTime::createFromFormat('d.m.Y', '25.12.2015');
+//        return $first < $second;
+        return true;
     }
 }

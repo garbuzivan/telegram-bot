@@ -60,6 +60,12 @@ class CreateTelegramBotTable extends Migration
             $table->json('json')->nullable();
             $table->timestamps();
         });
+
+        Schema::create('gi_tb_bonus', function (Blueprint $table) {
+            $table->id();
+            $table->integer('user_id');
+            $table->timestamps();
+        });
     }
 
     /**

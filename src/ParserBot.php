@@ -73,6 +73,11 @@ class ParserBot
         return null;
     }
 
+    /**
+     * @param array $message
+     * @param int $update_id
+     * @return bool
+     */
     public function newMessage(array $message, $update_id = 0): bool
     {
         if (isset($message['message_id'])) {
@@ -100,6 +105,11 @@ class ParserBot
             }
         }
         return false;
+    }
+
+    public function updateAdmin(): bool
+    {
+
     }
 
 }
