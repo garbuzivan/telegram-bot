@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace GarbuzIvan\TelegramBot;
 
 use Telegram\Bot\Exceptions\TelegramSDKException;
+use Telegram\Bot\Objects\Message as MessageObject;
 
 class TgApiBot extends \Telegram\Bot\Api
 {
@@ -60,5 +61,14 @@ class TgApiBot extends \Telegram\Bot\Api
             'chat_id' => $chatId,
             'message_id' => $messageId,
         ]);
+    }
+
+    public function sendMessage(array $params): MessageObject
+    {
+        $message = parent::sendMessage($params);
+//        $parser = new ParserBot();
+//        $parser->newMessage(self::getParam('message'), self::getParam('update_id'));
+        file_put_contents(public_path('tgtg.php'), json_encode($message), 8);
+        return $message;
     }
 }
