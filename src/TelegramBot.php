@@ -53,6 +53,10 @@ class TelegramBot
     {
         TgSession::setApi($this->config);
         $request = null;
+        TgSession::getApi()->sendMessage([
+            'chat_id' => TgSession::getParam('message.chat.id'),
+            'text' => json_encode(TgSession::$config->getCommands()),
+        ]);
         return app(Pipeline::class)
             ->send($request)
             ->via('handler')

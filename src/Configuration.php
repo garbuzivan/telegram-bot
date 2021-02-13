@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace GarbuzIvan\TelegramBot;
 
 use GarbuzIvan\TelegramBot\Commands\AbstractCommand;
-use Telegram\Bot\Objects\Update as UpdateObject;
 
 class Configuration
 {
@@ -62,9 +61,7 @@ class Configuration
     {
         $this->commands = [];
         foreach ($commands as $command) {
-            if (get_parent_class($command) == AbstractCommand::class) {
-                $this->commands[] = $command;
-            }
+            $this->commands[] = $command;
         }
     }
 
