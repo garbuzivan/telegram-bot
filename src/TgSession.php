@@ -148,7 +148,7 @@ class TgSession
         self::setUser($parser->getUser(self::getParam('message.from')));
         self::setUserReply($parser->getUser(self::getParam('message.reply_to_message.from')));
         self::setChat($parser->getChat());
-        //$parser->updateAdmin();
+        $parser->updateAdmin();
         $parser->newMessage(self::getParam('message'), self::getParam('update_id'));
     }
 }
