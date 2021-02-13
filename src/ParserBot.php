@@ -119,7 +119,6 @@ class ParserBot
             if (is_array($admins) && count($admins) > 0) {
                 TgBotChatAdmin::insert($admins);
             }
-
         }
     }
 
