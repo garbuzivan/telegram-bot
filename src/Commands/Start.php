@@ -33,7 +33,7 @@ class Start extends AbstractCommand
             $response = '';
             $commands = TgSession::getCommands();
             foreach ($commands as $name => $description) {
-                $response .= sprintf('/%s - %s' . PHP_EOL, $name, $description);
+                $response .= sprintf('%s - %s' . PHP_EOL, $name, $description);
             }
             TgSession::getApi()->sendMessage([
                 'chat_id' => TgSession::getParam('message.chat.id'),
