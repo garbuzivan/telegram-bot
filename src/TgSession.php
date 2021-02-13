@@ -157,14 +157,10 @@ class TgSession
         self::setUser($parser->getUser(self::getParam('message.from')));
         self::setUserReply($parser->getUser(self::getParam('message.reply_to_message.from')));
 
-        try {
-            self::getApi()->sendMessage([
-                'chat_id' => self::getParam('message.chat.id'),
-                'text' => json_encode(self::getParam())
-            ]);
-        } catch (TelegramSDKException $e){
-
-        }
+        self::getApi()->sendMessage([
+            'chat_id' => self::getParam('message.chat.id'),
+            'text' => json_encode(self::getParam())
+        ]);
         self::setChat($parser->getChat());
         $parser->newMessage(self::getParam('message'), self::getParam('update_id'));
     }
