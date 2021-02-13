@@ -95,15 +95,17 @@ class ParserBot
                     'reply_message_id' => $message['reply_to_message']['message_id'] ?? null,
                     'reply_from_id' => $message['reply_to_message']['from']['id'] ?? null,
                     'text' => $message['text'] ?? null,
-                    'json' => json_encode(TgSession::getParam()),
+                    'json' => json_encode($message),
                 ];
                 TgBotMessage::create($insert);
                 // обновляем количество особщений и дату последней активности
-                TgBotUser::where('tg_id', $message['from']['id'])
-                    ->update([
-                        'message_count' => DB::raw('message_count+1'),
-                        'last_time' => Carbon::now()
-                    ]);
+                if ($update_id != 0) {
+                    TgBotUser::where('tg_id', $message['from']['id'])
+                        ->update([
+                            'message_count' => DB::raw('message_count+1'),
+                            'last_time' => Carbon::now()
+                        ]);
+                }
             }
         }
         return false;

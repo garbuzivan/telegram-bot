@@ -57,14 +57,4 @@ class TelegramBot
         ]);
         return TgSession::getApi()->commandsHandler(true);
     }
-
-    public function message()
-    {
-
-    }
-
-    public function messageBot()
-    {
-
-    }
 }
