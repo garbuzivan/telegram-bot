@@ -9,14 +9,14 @@ use Closure;
 abstract class AbstractCommand
 {
     /**
-     * @var
+     * @var string
      */
-    abstract public $name;
+    abstract public string $name;
 
     /**
-     * @var
+     * @var string
      */
-    abstract public $description;
+    abstract public string $description;
 
     /**
      * @param $request
