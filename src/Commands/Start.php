@@ -22,7 +22,7 @@ class Start extends AbstractCommand
     /**
      * @inheritdoc
      */
-    public function handle($request, Closure $next)
+    public function handler($request, Closure $next)
     {
         if (in_array(TgSession::getCall(), ['/start', '/help'])) {
             TgSession::getApi()->sendMessage([

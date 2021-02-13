@@ -22,5 +22,5 @@ abstract class AbstractCommand
      * @param $request
      * @param Closure $next
      */
-    abstract public function handle($request, Closure $next);
+    abstract public function handler($request, Closure $next);
 }
