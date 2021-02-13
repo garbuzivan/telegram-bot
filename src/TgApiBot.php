@@ -63,6 +63,11 @@ class TgApiBot extends \Telegram\Bot\Api
         ]);
     }
 
+    /**
+     * @param array $params
+     * @return MessageObject
+     * @throws TelegramSDKException
+     */
     public function sendMessage(array $params): MessageObject
     {
         $message = parent::sendMessage($params);
