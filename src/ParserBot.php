@@ -18,9 +18,9 @@ class ParserBot
      * @param $user
      * @return TgBotUser|null
      */
-    public function getUser(array $user): ?TgBotUser
+    public function getUser(?array $user): ?TgBotUser
     {
-        if (isset($user['id'])) {
+        if (!is_null($user) && isset($user['id'])) {
             return $this->firstOrCreate($user);
         }
         return null;
@@ -59,9 +59,9 @@ class ParserBot
             $chatID = $chat['id'];
             $chat = TgBotChat::where('chat_id', $chatID)->first();
             if (is_null($chat)) {
-                $chatTitle = $chatID < 0 ?
+                $chatTitle = null; /*$chatID < 0 ?
                     ($chat['title'] ?? null)
-                    : 'ЛС: ' . TgSession::getUser()->full_name;
+                    : 'ЛС: ' . TgSession::getUser()->full_name;*/
                 $insert = [
                     'chat_id' => $chatID,
                     'chat_title' => $chatTitle,

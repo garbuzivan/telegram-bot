@@ -49,7 +49,7 @@ class TgSession
         self::setParam(self::$telegram->getWebhookUpdate());
         self::getApi()->sendMessage([
             'chat_id' => self::getParam('message.chat.id'),
-            'text' => 'test ' . json_encode(self::getParam())
+            'text' => 'test1 ' . json_encode(self::getParam())
         ]);
         self::parserWebHook();
     }
@@ -147,10 +147,9 @@ class TgSession
         $parser = new ParserBot();
         self::setUser($parser->getUser(self::getParam('message.from')));
         self::setUserReply($parser->getUser(self::getParam('message.reply_to_message.from')));
-
         self::getApi()->sendMessage([
             'chat_id' => self::getParam('message.chat.id'),
-            'text' => json_encode(self::getParam())
+            'text' => 'test2 ' . json_encode(self::getParam())
         ]);
         self::setChat($parser->getChat());
         $parser->newMessage(self::getParam('message'), self::getParam('update_id'));
