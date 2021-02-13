@@ -126,10 +126,28 @@ class TgSession
     }
 
     /**
+     * @param TgBotChat|null $chat
+     */
+    public static function setChat(?TgBotChat $chat): void
+    {
+        self::$chat = $chat;
+    }
+
+    /**
+     * @return TgBotChat|null
+     */
+    public static function getChat(): ?TgBotChat
+    {
+        return self::$chat;
+    }
+
+    /**
      *
      */
     protected static function parserWebHook(): void
     {
+        file_put_contents(public_path('tgg.txt'), json_encode(self::getParam()), 8);
+        file_put_contents(public_path('tgg.txt'), json_encode(self::getParam('message.from')), 8);
         $parser = new ParserBot(self::$config);
         self::setUser($parser->getUser(self::getParam('message.from')));
         self::setUserReply($parser->getUser(self::getParam('message.reply_to_message.from')));
@@ -144,21 +162,5 @@ class TgSession
         }
         self::setChat($parser->getChat());
         $parser->newMessage(self::getParam('message'), self::getParam('update_id'));
-    }
-
-    /**
-     * @param TgBotChat|null $chat
-     */
-    public static function setChat(?TgBotChat $chat): void
-    {
-        self::$chat = $chat;
-    }
-
-    /**
-     * @return TgBotChat|null
-     */
-    public static function getChat(): ?TgBotChat
-    {
-        return self::$chat;
     }
 }
