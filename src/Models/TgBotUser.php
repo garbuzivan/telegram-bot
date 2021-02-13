@@ -41,7 +41,7 @@ class TgBotUser extends Model
      */
     public function fullname()
     {
-        return ucwords($this->first_name . ' ' . $this->last_name);
+        return trim(ucwords($this->first_name . ' ' . $this->last_name));
     }
 
     public function link()
