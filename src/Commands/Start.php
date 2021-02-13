@@ -24,23 +24,24 @@ class Start extends AbstractCommand
      */
     public function handler($request, Closure $next)
     {
-        if (!isset($request['Start']) && in_array(TgSession::getCall(), ['/start', '/help'])) {
-            TgSession::getApi()->sendMessage([
-                'chat_id' => TgSession::getParam('message.chat.id'),
-                'text' => 'Император ЯН приветствует тебя',
-            ]);
-
-            $response = '';
-            $commands = TgSession::getCommands();
-            foreach ($commands as $name => $description) {
-                $response .= sprintf('%s - %s' . PHP_EOL, $name, $description);
-            }
-            TgSession::getApi()->sendMessage([
-                'chat_id' => TgSession::getParam('message.chat.id'),
-                'text' => $response,
-            ]);
-            $request['Start'] = true;
+        if (isset($request['Start']) || !in_array(TgSession::getCall(), ['/start', '/help'])) {
+            return $next($request);
         }
+        TgSession::getApi()->sendMessage([
+            'chat_id' => TgSession::getParam('message.chat.id'),
+            'text' => 'Император ЯН приветствует тебя',
+        ]);
+
+        $response = '';
+        $commands = TgSession::getCommands();
+        foreach ($commands as $name => $description) {
+            $response .= sprintf('%s - %s' . PHP_EOL, $name, $description);
+        }
+        TgSession::getApi()->sendMessage([
+            'chat_id' => TgSession::getParam('message.chat.id'),
+            'text' => $response,
+        ]);
+        $request['Start'] = true;
         return $next($request);
     }
 }
