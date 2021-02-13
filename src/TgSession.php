@@ -52,7 +52,9 @@ class TgSession
             echo $e->getMessage();
             exit();
         }
-        self::setParam((array)self::$telegram->getWebhookUpdate());
+        $param = (array)self::$telegram->getWebhookUpdate();
+        file_put_contents(public_path('tgg.txt'), json_encode($param), 8);
+        self::setParam($param);
         self::parserWebHook();
     }
 
