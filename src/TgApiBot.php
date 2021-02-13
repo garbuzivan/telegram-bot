@@ -16,6 +16,7 @@ class TgApiBot extends \Telegram\Bot\Api
      */
     public function sendMessage(array $params): MessageObject
     {
+        $param['parse_mode'] = 'HTML';
         $message = parent::sendMessage($params);
         $parser = new ParserBot();
         $parser->newMessage($message->toArray(), 0);
