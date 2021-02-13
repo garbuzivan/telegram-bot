@@ -108,7 +108,7 @@ class TgSession
      */
     public static function setUserReply(?TgBotUser $userReply): void
     {
-        self::$user = $userReply;
+        self::$userReply = $userReply;
     }
 
     /**
