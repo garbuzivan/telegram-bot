@@ -58,12 +58,15 @@ class TgBotUser extends Model
 
     public function activeBonus()
     {
-        if (!isset($this->bonus) || is_null($this->bonus) || !isset($this->bonus->created_at)) {
+        if (
+            !isset($this->bonus) ||
+            is_null($this->bonus) ||
+            !isset($this->bonus->created_at) ||
+            $this->bonus->timestamp > strtotime('-6 hours')
+        )
+        {
             return false;
         }
-        //        $first = DateTime::createFromFormat('d.m.Y', '01.01.2016');
-        //        $second = DateTime::createFromFormat('d.m.Y', '25.12.2015');
-        //        return $first < $second;
         return true;
     }
 }
