@@ -90,7 +90,7 @@ class TgSession
                 return null;
             }
         }
-        return null;
+        return $value;
     }
 
     /**
