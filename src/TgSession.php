@@ -144,8 +144,6 @@ class TgSession
      */
     protected static function parserWebHook(): void
     {
-        file_put_contents(public_path('tgg.txt'), json_encode(self::getParam()) . "\n", 8);
-        file_put_contents(public_path('tgg.txt'), json_encode(self::getParam('message.from')) . "\n\n", 8);
         $parser = new ParserBot();
         self::setUser($parser->getUser(self::getParam('message.from')));
         self::setUserReply($parser->getUser(self::getParam('message.reply_to_message.from')));

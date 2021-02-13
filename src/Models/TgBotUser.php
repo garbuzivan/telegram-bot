@@ -26,6 +26,10 @@ class TgBotUser extends Model
         'title',
     ];
 
+    protected $appends = [
+        'full_name',
+    ];
+
     /**
      * Get a list of unused codes sent by email
      *
@@ -40,8 +44,8 @@ class TgBotUser extends Model
     /**
      * @return string
      */
-    public function fullName(): string
+    public function getFullNameAttribute()
     {
-        return ucfirst($this->first_name) . ' ' . ucfirst($this->last_name);
+        return ucwords($this->first_name . ' ' . $this->last_name);
     }
 }
