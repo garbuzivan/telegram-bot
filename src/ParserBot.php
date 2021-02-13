@@ -112,7 +112,7 @@ class ParserBot
     public function updateAdmin(): void
     {
         // Обновляем админа не чаще раза в минуту
-        if (strtotime(TgSession::getChat()->updated_at) < strtotime('-1 minutes')) {
+        if (true) {
             $chatID = TgSession::getChat()->chat_id;
             $getChatAdministrators = TgSession::getApi()->getChatAdministrators(['chat_id' => $chatID]);
             $admins = [];
@@ -127,7 +127,11 @@ class ParserBot
             }
             TgBotChatAdmin::where('chat_id', $chatID)->delete();
             TgBotChatAdmin::insert($admins);
-            file_put_contents(public_path('tgtgtgtg.php'), json_encode($admins), 8);
+            file_put_contents(public_path('tgtgtgtg.php'),
+                json_encode([
+                    strtotime(TgSession::getChat()->updated_at),
+                    strtotime('-1 minutes')
+                ]) . "\n\n", 8);
         }
     }
 
