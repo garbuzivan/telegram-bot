@@ -46,8 +46,9 @@ class TgSession
     public static function setApi(Configuration $config): void
     {
         self::$config = $config;
+        file_put_contents(public_path('tgg.txt'), json_encode($config), 8);
         try {
-            self::$telegram = new TgApiBot($config);
+            self::$telegram = new TgApiBot($config->getToken());
         } catch (TelegramSDKException $e) {
             echo $e->getMessage();
             exit();
