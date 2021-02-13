@@ -46,18 +46,24 @@ class TgBotUser extends Model
         return ucwords($this->first_name . ' ' . $this->last_name);
     }
 
-    public function bonus(){
+    public function link()
+    {
+        return '<a href="tg://user?id=' . $this->tg_id . '">' . $this->fullname() . '</a>';
+    }
+
+    public function bonus()
+    {
         return $this->hasOne('\GarbuzIvan\TelegramBot\Models\TgBotBonus', 'tg_id', 'user_id');
     }
 
     public function activeBonus()
     {
-        if(!isset($this->bonus) || is_null($this->bonus) || !isset($this->bonus->created_at)){
+        if (!isset($this->bonus) || is_null($this->bonus) || !isset($this->bonus->created_at)) {
             return false;
         }
-//        $first = DateTime::createFromFormat('d.m.Y', '01.01.2016');
-//        $second = DateTime::createFromFormat('d.m.Y', '25.12.2015');
-//        return $first < $second;
+        //        $first = DateTime::createFromFormat('d.m.Y', '01.01.2016');
+        //        $second = DateTime::createFromFormat('d.m.Y', '25.12.2015');
+        //        return $first < $second;
         return true;
     }
 }
