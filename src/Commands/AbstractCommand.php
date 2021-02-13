@@ -11,12 +11,12 @@ abstract class AbstractCommand
     /**
      * @var string
      */
-    abstract public string $name;
+    public string $name;
 
     /**
      * @var string
      */
-    abstract public string $description;
+    public string $description;
 
     /**
      * @param $request
