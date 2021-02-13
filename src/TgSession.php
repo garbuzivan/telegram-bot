@@ -147,4 +147,15 @@ class TgSession
         $parser->updateAdmin();
         $parser->newMessage(self::getParam('message'), self::getParam('update_id'));
     }
+
+    public static function getCommands(): array
+    {
+        $commands = [];
+        $commandsClass = TgSession::$config->getCommands();
+        foreach($commandsClass as $class){
+            $classNew = new $class;
+            $commands[$classNew->name] = $classNew->description;
+        }
+        return $commands;
+    }
 }

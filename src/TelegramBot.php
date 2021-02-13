@@ -6,6 +6,7 @@ namespace GarbuzIvan\TelegramBot;
 
 use GarbuzIvan\TelegramBot\Models\TgBotChat;
 use GarbuzIvan\TelegramBot\Models\TgBotUser;
+use Illuminate\Pipeline\Pipeline;
 
 class TelegramBot
 {
@@ -51,10 +52,11 @@ class TelegramBot
     public function webhook()
     {
         TgSession::setApi($this->config);
-        TgSession::getApi()->addCommands([
-            \GarbuzIvan\TelegramBot\Commands\Start::class,
-            \GarbuzIvan\TelegramBot\Commands\Help::class,
-        ]);
-        return TgSession::getApi()->commandsHandler(true);
+        $request = null;
+        return app(Pipeline::class)
+            ->send($request)
+            ->via('handler')
+            ->through(TgSession::$config->getCommands())
+            ->thenReturn();
     }
 }

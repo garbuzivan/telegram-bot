@@ -30,9 +30,9 @@ class Start extends AbstractCommand
         ]);
 
         $response = '';
-        $commands = $this->getTelegram()->getCommands();
-        foreach ($commands as $name => $command) {
-            $response .= sprintf('/%s - %s' . PHP_EOL, $name, $command->getDescription());
+        $commands = TgSession::getCommands();
+        foreach ($commands as $name => $description) {
+            $response .= sprintf('/%s - %s' . PHP_EOL, $name, $description);
         }
         TgSession::getApi()->sendMessage([
             'chat_id' => TgSession::getParam('message.chat.id'),
