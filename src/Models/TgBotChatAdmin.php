@@ -8,21 +8,17 @@ use Illuminate\Database\Query\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class TgBotChat extends Model
+class TgBotChatAdmin extends Model
 {
     use HasFactory;
 
-    protected $table = 'gi_tb_chats';
+    protected $table = 'gi_tb_chat_admins';
 
     /**
      * @var array<string> $fillable
      */
     protected $fillable = [
         'chat_id',
-        'chat_title',
+        'user_id',
     ];
-
-    public function admin(){
-        return $this->hasMany('\GarbuzIvan\TelegramBot\Models\TgBotChatAdmin', 'chat_id', 'chat_id');
-    }
 }

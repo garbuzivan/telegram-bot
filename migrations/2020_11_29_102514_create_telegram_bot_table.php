@@ -39,6 +39,13 @@ class CreateTelegramBotTable extends Migration
             $table->timestamps();
         });
 
+        Schema::create('gi_tb_chat_admins', function (Blueprint $table) {
+            $table->id();
+            $table->integer('chat_id');
+            $table->integer('user_id');
+            $table->timestamps();
+        });
+
         Schema::create('gi_tb_messages', function (Blueprint $table) {
             $table->id();
             $table->integer('update_id');
