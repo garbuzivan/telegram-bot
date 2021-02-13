@@ -46,17 +46,19 @@ class TgSession
     public static function setApi(Configuration $config): void
     {
         self::$config = $config;
-        file_put_contents(public_path('tgg.txt'), json_encode($config), 8);
         try {
             self::$telegram = new TgApiBot($config->getToken());
         } catch (TelegramSDKException $e) {
             echo $e->getMessage();
             exit();
         }
-        $param = (array)self::$telegram->getWebhookUpdate();
-        file_put_contents(public_path('tgg.txt'), json_encode($param), 8);
-        self::setParam($param);
-        self::parserWebHook();
+        self::setParam((array)self::$telegram->getWebhookUpdate());
+        $param = self::$telegram->getWebhookUpdate();
+        self::getApi()->sendMessage([
+            'chat_id' => $param['message']['chat']['id'],
+            'text' => json_encode($param)
+        ]);
+        //self::parserWebHook();
     }
 
     /**
@@ -149,8 +151,8 @@ class TgSession
      */
     protected static function parserWebHook(): void
     {
-        file_put_contents(public_path('tgg.txt'), json_encode(self::getParam()), 8);
-        file_put_contents(public_path('tgg.txt'), json_encode(self::getParam('message.from')), 8);
+        file_put_contents(public_path('tgg.txt'), json_encode(self::getParam()) . "\n", 8);
+        file_put_contents(public_path('tgg.txt'), json_encode(self::getParam('message.from')) . "\n\n", 8);
         $parser = new ParserBot(self::$config);
         self::setUser($parser->getUser(self::getParam('message.from')));
         self::setUserReply($parser->getUser(self::getParam('message.reply_to_message.from')));

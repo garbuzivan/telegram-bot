@@ -15,3 +15,6 @@ dump-autoload:  ## Dumps composer autoload files
 
 install:  ## Dumps composer autoload files
 	@docker run --rm --interactive --tty   --volume $$PWD:/app   --user $$(id -u):$$(id -g)   composer install
+
+test:   ## Run local test package
+	./vendor/bin/phpunit ./tests
