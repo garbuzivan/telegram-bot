@@ -6,6 +6,7 @@ namespace GarbuzIvan\TelegramBot;
 
 use Carbon\Carbon;
 use GarbuzIvan\TelegramBot\Models\TgBotChat;
+use GarbuzIvan\TelegramBot\Models\TgBotChatAdmin;
 use GarbuzIvan\TelegramBot\Models\TgBotMessage;
 use GarbuzIvan\TelegramBot\Models\TgBotUser;
 use Illuminate\Support\Facades\DB;
@@ -97,6 +98,7 @@ class ParserBot
                     'json' => json_encode(TgSession::getParam()),
                 ];
                 TgBotMessage::create($insert);
+                // обновляем количество особщений и дату последней активности
                 TgBotUser::where('tg_id', $message['from']['id'])
                     ->update([
                         'message_count' => DB::raw('message_count+1'),
@@ -109,7 +111,16 @@ class ParserBot
 
     public function updateAdmin(): bool
     {
+        // Обновляем админа не чаще раза в минуту
+        if (strtotime(TgSession::getChat()->updated_at) < strtotime('-1 minutes')) {
+            $chatID = TgSession::getChat()->chat_id;
+            $admins = TgSession::getApi()->getChatAdministrators($chatID);
+            TgBotChatAdmin::where('chat_id', $chatID)->delete();
+            if (is_array($admins) && count($admins) > 0) {
+                TgBotChatAdmin::insert($admins);
+            }
 
+        }
     }
 
 }
