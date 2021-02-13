@@ -6,14 +6,13 @@ namespace GarbuzIvan\TelegramBot;
 
 use GarbuzIvan\TelegramBot\Models\TgBotChat;
 use GarbuzIvan\TelegramBot\Models\TgBotUser;
-use Telegram\Bot\Exceptions\TelegramSDKException;
 
 class TgSession
 {
     /**
      * @var Configuration $config
      */
-    protected static Configuration $config;
+    public static Configuration $config;
 
     /**
      * @var TgApiBot
@@ -21,9 +20,9 @@ class TgSession
     protected static TgApiBot $telegram;
 
     /**
-     * @var array
+     * @var
      */
-    protected static array $param;
+    protected static $param;
 
     /**
      * @var TgBotUser|null
@@ -46,19 +45,13 @@ class TgSession
     public static function setApi(Configuration $config): void
     {
         self::$config = $config;
-        try {
-            self::$telegram = new TgApiBot($config->getToken());
-        } catch (TelegramSDKException $e) {
-            echo $e->getMessage();
-            exit();
-        }
-        self::setParam((array)self::$telegram->getWebhookUpdate());
-        $param = self::$telegram->getWebhookUpdate();
+        self::$telegram = new TgApiBot($config->getToken());
+        self::setParam(self::$telegram->getWebhookUpdate());
         self::getApi()->sendMessage([
-            'chat_id' => $param['message']['chat']['id'],
-            'text' => json_encode($param)
+            'chat_id' => self::getParam('message.chat.id'),
+            'text' => 'test ' . json_encode(self::getParam())
         ]);
-        self::parserWebHook();
+        //self::parserWebHook();
     }
 
     /**
@@ -70,9 +63,9 @@ class TgSession
     }
 
     /**
-     * @param array $param
+     * @param $param
      */
-    public static function setParam(array $param): void
+    public static function setParam($param): void
     {
         self::$param = $param;
     }
@@ -153,7 +146,7 @@ class TgSession
     {
         file_put_contents(public_path('tgg.txt'), json_encode(self::getParam()) . "\n", 8);
         file_put_contents(public_path('tgg.txt'), json_encode(self::getParam('message.from')) . "\n\n", 8);
-        $parser = new ParserBot(self::$config);
+        $parser = new ParserBot();
         self::setUser($parser->getUser(self::getParam('message.from')));
         self::setUserReply($parser->getUser(self::getParam('message.reply_to_message.from')));
 
