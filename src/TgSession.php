@@ -53,6 +53,7 @@ class TgSession
             exit();
         }
         self::setParam((array)self::$telegram->getWebhookUpdate());
+        self::parserWebHook();
     }
 
     /**
