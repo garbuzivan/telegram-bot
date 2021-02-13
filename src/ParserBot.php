@@ -13,25 +13,6 @@ use Illuminate\Support\Facades\DB;
 class ParserBot
 {
     /**
-     * @var Configuration $config
-     */
-    protected Configuration $config;
-
-    /**
-     * Configuration constructor.
-     * @param Configuration|null $config
-     */
-    public function __construct(Configuration $config = null)
-    {
-        if (is_null($config)) {
-            $config = new Configuration();
-        }
-        if ($config instanceof Configuration) {
-            $this->config = $config;
-        }
-    }
-
-    /**
      * Create if not exists user
      *
      * @param $user
@@ -108,7 +89,7 @@ class ParserBot
                     'reply_message_id' => $message['reply_to_message']['message_id'] ?? null,
                     'reply_from_id' => $message['reply_to_message']['from']['id'] ?? null,
                     'text' => $message['text'] ?? null,
-                    'json' => json_encode($this->config->param),
+                    'json' => json_encode(TgSession::getParam()),
                 ];
                 TgBotMessage::create($insert);
                 TgBotUser::where('tg_id', $message['from']['id'])

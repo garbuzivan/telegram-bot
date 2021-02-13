@@ -58,7 +58,7 @@ class TgSession
             'chat_id' => $param['message']['chat']['id'],
             'text' => json_encode($param)
         ]);
-        //self::parserWebHook();
+        self::parserWebHook();
     }
 
     /**

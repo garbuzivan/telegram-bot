@@ -25,7 +25,7 @@ class TgSessionTest extends TestCase
             'test3',
         ];
         TgSession::setParam($param);
-        $this->assertIsBool(array_diff($param, TgSession::getParam()));
+        $this->assertIsBool(strcmp(json_encode($param), json_encode(TgSession::getParam())) == 0);
         $this->assertIsBool(TgSession::getParam('test2.v2.b2') == 'bot');
     }
 }
