@@ -53,7 +53,7 @@ class TelegramBot
         TgSession::setApi($this->config);
         TgSession::getApi()->addCommands([
             \GarbuzIvan\TelegramBot\Commands\Start::class,
-            \GarbuzIvan\TelegramBot\Commands\Help::class,
+            //\GarbuzIvan\TelegramBot\Commands\Help::class,
         ]);
         return TgSession::getApi()->commandsHandler(true);
     }

@@ -47,10 +47,6 @@ class TgSession
         self::$config = $config;
         self::$telegram = new TgApiBot($config->getToken());
         self::setParam(self::$telegram->getWebhookUpdate());
-        self::getApi()->sendMessage([
-            'chat_id' => self::getParam('message.chat.id'),
-            'text' => 'test1 ',
-        ]);
         self::parserWebHook();
     }
 
