@@ -167,7 +167,7 @@ class TgSession
         $text = self::getParam('message.text');
         $text = str_replace(['/ ', '! '], null, $text);
         $str = explode(' ', $text, 2);
-        return $str[0];
+        return mb_strtolower($str[0]);
     }
 
     public static function getCallParam(): string

@@ -24,7 +24,7 @@ class Start extends AbstractCommand
      */
     public function handle($request, Closure $next)
     {
-        if(TgSession::setParam('')) {
+        if (in_array(TgSession::getCall(), ['/start', '/help'])) {
             TgSession::getApi()->sendMessage([
                 'chat_id' => TgSession::getParam('message.chat.id'),
                 'text' => 'Император ЯН приветствует тебя',
