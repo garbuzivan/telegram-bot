@@ -18,8 +18,7 @@ class TgApiBot extends \Telegram\Bot\Api
     {
         $message = parent::sendMessage($params);
         $parser = new ParserBot();
-        $parser->newMessage((array)$message, 1);
-        file_put_contents(public_path('message.php'), json_encode($message) . "\n\n", 8);
+        $parser->newMessage($message->toArray(), 0);
         return $message;
     }
     //    /**

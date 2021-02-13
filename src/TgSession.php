@@ -47,11 +47,10 @@ class TgSession
         self::$config = $config;
         self::$telegram = new TgApiBot($config->getToken());
         self::setParam(self::$telegram->getWebhookUpdate());
-        $message = self::getApi()->sendMessage([
+        self::getApi()->sendMessage([
             'chat_id' => self::getParam('message.chat.id'),
-            'text' => 'test1 ' . json_encode(self::getParam())
+            'text' => 'test1 ',
         ]);
-        file_put_contents(public_path('message.php'), json_encode($message) . "\n\n", 8);
         self::parserWebHook();
     }
 
