@@ -24,21 +24,22 @@ class Start extends AbstractCommand
      */
     public function handle($request, Closure $next)
     {
-        TgSession::getApi()->sendMessage([
-            'chat_id' => TgSession::getParam('message.chat.id'),
-            'text' => 'Император ЯН приветствует тебя',
-        ]);
+        if(TgSession::setParam('')) {
+            TgSession::getApi()->sendMessage([
+                'chat_id' => TgSession::getParam('message.chat.id'),
+                'text' => 'Император ЯН приветствует тебя',
+            ]);
 
-        $response = '';
-        $commands = TgSession::getCommands();
-        foreach ($commands as $name => $description) {
-            $response .= sprintf('/%s - %s' . PHP_EOL, $name, $description);
+            $response = '';
+            $commands = TgSession::getCommands();
+            foreach ($commands as $name => $description) {
+                $response .= sprintf('/%s - %s' . PHP_EOL, $name, $description);
+            }
+            TgSession::getApi()->sendMessage([
+                'chat_id' => TgSession::getParam('message.chat.id'),
+                'text' => $response,
+            ]);
         }
-        TgSession::getApi()->sendMessage([
-            'chat_id' => TgSession::getParam('message.chat.id'),
-            'text' => $response,
-        ]);
-
         return $next($request);
     }
 }

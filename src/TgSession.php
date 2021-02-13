@@ -148,6 +148,9 @@ class TgSession
         $parser->newMessage(self::getParam('message'), self::getParam('update_id'));
     }
 
+    /**
+     * @return array
+     */
     public static function getCommands(): array
     {
         $commands = [];
@@ -157,5 +160,21 @@ class TgSession
             $commands[$classNew->name] = $classNew->description;
         }
         return $commands;
+    }
+
+    public static function getCall(): string
+    {
+        $text = self::getParam('message.text');
+        $text = str_replace(['/ ', '! '], null, $text);
+        $str = explode(' ', $text, 2);
+        return $str[0];
+    }
+
+    public static function getCallParam(): string
+    {
+        $text = self::getParam('message.text');
+        $text = str_replace(['/ ', '! '], null, $text);
+        $str = explode(' ', $text, 2);
+        return $str[1];
     }
 }
