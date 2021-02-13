@@ -6,7 +6,6 @@ namespace GarbuzIvan\TelegramBot;
 
 use GarbuzIvan\TelegramBot\Models\TgBotChat;
 use GarbuzIvan\TelegramBot\Models\TgBotUser;
-use phpDocumentor\Reflection\File;
 
 class TelegramBot
 {
