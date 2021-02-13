@@ -34,27 +34,13 @@ class ParserBot
     /**
      * Create if not exists user
      *
+     * @param $user
      * @return TgBotUser|null
      */
-    public function getUserFrom(): ?TgBotUser
+    public function getUser(array $user): ?TgBotUser
     {
-        if (isset($this->config->param['message']['from']['id'])) {
-            $from = $this->config->param['message']['from'];
-            return $this->firstOrCreate($from);
-        }
-        return null;
-    }
-
-    /**
-     * Create if not exists user in reply
-     *
-     * @return TgBotUser|null
-     */
-    public function getUserReply(): ?TgBotUser
-    {
-        if (isset($this->config->param['message']['reply_to_message']['from']['id'])) {
-            $from = $this->config->param['message']['reply_to_message']['from'];
-            return $this->firstOrCreate($from);
+        if (isset($user['id'])) {
+            return $this->firstOrCreate($user);
         }
         return null;
     }
@@ -87,18 +73,19 @@ class ParserBot
      */
     public function getChat(): ?TgBotChat
     {
-        if (isset($this->config->param['message']['chat']['id'])) {
-            $chatID = $this->config->param['message']['chat']['id'];
+        $chat = TgSession::getParam('message.chat');
+        if (isset($chat['id'])) {
+            $chatID = $chat['id'];
             $chat = TgBotChat::where('chat_id', $chatID)->first();
             if (is_null($chat)) {
                 $chatTitle = $chatID < 0 ?
-                    ($this->config->param['message']['chat']['title'] ?? null)
-                    : 'ЛС: ' . TgBotUser::where('id', $chatID)->first()->fullName;
+                    ($chat['title'] ?? null)
+                    : 'ЛС: ' . TgSession::getUser()->fullName;
                 $insert = [
                     'chat_id' => $chatID,
                     'chat_title' => $chatTitle,
                 ];
-                return TgBotChat::insert($insert);
+                return TgBotChat::create($insert);
             }
             return $chat;
         }
@@ -123,7 +110,7 @@ class ParserBot
                     'text' => $message['text'] ?? null,
                     'json' => json_encode($this->config->param),
                 ];
-                TgBotMessage::insert($insert);
+                TgBotMessage::create($insert);
                 TgBotUser::where('tg_id', $message['from']['id'])
                     ->update([
                         'message_count' => DB::raw('message_count+1'),

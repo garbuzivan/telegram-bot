@@ -29,16 +29,6 @@ class Configuration
     protected ?string $token = null;
 
     /**
-     * @var TgApiBot
-     */
-    public TgApiBot $telegram;
-
-    /**
-     * @var UpdateObject
-     */
-    public UpdateObject $param;
-
-    /**
      * Configuration constructor.
      * @param Configuration|null $config
      */

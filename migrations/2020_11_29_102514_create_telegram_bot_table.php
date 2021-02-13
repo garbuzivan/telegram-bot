@@ -23,6 +23,7 @@ class CreateTelegramBotTable extends Migration
             $table->timestamp('last_time')->nullable(); // последняя активность
             $table->string('sex')->nullable(); // пол
             $table->integer('message_count')->default(0); //  количество сообщений
+            $table->integer('money')->default(0); //  баланс
             $table->integer('rank')->nullable(); //  ранк
             $table->integer('penis')->nullable(); // пенис
             $table->integer('boobs')->nullable(); // сиськи
@@ -35,6 +36,7 @@ class CreateTelegramBotTable extends Migration
             $table->id();
             $table->integer('chat_id');
             $table->string('chat_title')->nullable();
+            $table->timestamps();
         });
 
         Schema::create('gi_tb_messages', function (Blueprint $table) {

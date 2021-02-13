@@ -51,17 +51,7 @@ class TelegramBot
 
     public function webhook()
     {
-        $this->config->telegram = new TgApiBot($this->config->getToken());
-        $this->config->param = $this->config->telegram->getWebhookUpdate();
-        $parser = new ParserBot($this->config);
-        $this->userFrom = $parser->getUserFrom();
-        $this->userReply = $parser->getUserReply();
-        $this->config->telegram->sendMessage([
-            'chat_id' => $this->config->param['message']['chat']['id'],
-            'text' => json_encode($this->config->param)
-        ]);
-        $this->chat = $parser->getChat();
-        $this->message = $parser->newMessage($this->config->param['message'], $this->config->param['update_id']);
+        TgSession::setApi($this->config);
         exit();
     }
 
