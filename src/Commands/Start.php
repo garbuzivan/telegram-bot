@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace GarbuzIvan\TelegramBot\Commands;
 
-use \Telegram\Bot\Actions;
+use GarbuzIvan\TelegramBot\TgSession;
 use \Telegram\Bot\Commands\Command;
 
 class Start extends Command
@@ -28,10 +28,13 @@ class Start extends Command
         // the user/chat id who triggered this command.
         // `replyWith<Message|Photo|Audio|Video|Voice|Document|Sticker|Location|ChatAction>()` all the available methods are dynamically
         // handled when you replace `send<Method>` with `replyWith` and use the same parameters - except chat_id does NOT need to be included in the array.
-        $this->replyWithMessage(['text' => 'Император ЯН приветствует тебя']);
+        TgSession::getApi()->sendMessage([
+            'chat_id' => self::getParam('message.chat.id'),
+            'text' => 'Император ЯН приветствует тебя',
+        ]);
 
         // This will update the chat status to typing...
-        $this->replyWithChatAction(['action' => Actions::TYPING]);
+        //$this->replyWithChatAction(['action' => Actions::TYPING]);
 
         // This will prepare a list of available commands and send the user.
         // First, Get an array of all registered commands
@@ -45,7 +48,10 @@ class Start extends Command
         }
 
         // Reply with the commands list
-        $this->replyWithMessage(['text' => $response]);
+        TgSession::getApi()->sendMessage([
+            'chat_id' => self::getParam('message.chat.id'),
+            'text' => $response,
+        ]);
 
         // Trigger another command dynamically from within this command
         // When you want to chain multiple commands within one or process the request further.
