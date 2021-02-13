@@ -15,7 +15,7 @@ class CreateTelegramBotTable extends Migration
     {
         Schema::create('gi_tb_user', function (Blueprint $table) {
             $table->id();
-            $table->integer('tg_id');
+            $table->bigInteger('tg_id');
             $table->integer('is_bot')->default(0);
             $table->string('username')->nullable();
             $table->string('first_name')->nullable();
@@ -23,7 +23,7 @@ class CreateTelegramBotTable extends Migration
             $table->timestamp('last_time')->nullable(); // последняя активность
             $table->string('sex')->nullable(); // пол
             $table->integer('message_count')->default(0); //  количество сообщений
-            $table->integer('money')->default(0); //  баланс
+            $table->bigInteger('money')->default(0); //  баланс
             $table->integer('rank')->nullable(); //  ранк
             $table->integer('penis')->nullable(); // пенис
             $table->integer('boobs')->nullable(); // сиськи
@@ -34,28 +34,28 @@ class CreateTelegramBotTable extends Migration
 
         Schema::create('gi_tb_chats', function (Blueprint $table) {
             $table->id();
-            $table->integer('chat_id');
+            $table->bigInteger('chat_id');
             $table->string('chat_title')->nullable();
             $table->timestamps();
         });
 
         Schema::create('gi_tb_chat_admins', function (Blueprint $table) {
             $table->id();
-            $table->integer('chat_id');
+            $table->bigInteger('chat_id');
             $table->integer('user_id');
             $table->timestamps();
         });
 
         Schema::create('gi_tb_messages', function (Blueprint $table) {
             $table->id();
-            $table->integer('update_id');
-            $table->integer('message_id');
-            $table->integer('from_id');
-            $table->integer('chat_id');
+            $table->bigInteger('update_id');
+            $table->bigInteger('message_id');
+            $table->bigInteger('from_id');
+            $table->bigInteger('chat_id');
             $table->string('chat_title')->nullable();
             $table->integer('date')->default(0);
-            $table->integer('reply_message_id')->nullable();
-            $table->integer('reply_from_id')->nullable();
+            $table->bigInteger('reply_message_id')->nullable();
+            $table->bigInteger('reply_from_id')->nullable();
             $table->longText('text')->nullable();
             $table->json('json')->nullable();
             $table->timestamps();
