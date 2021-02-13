@@ -111,8 +111,11 @@ class ParserBot
         return false;
     }
 
-    public function updateAdmin(): void
+    public function updateAdmin()
     {
+        if(TgSession::getChat()->chat_id > 0){
+            return false;
+        }
         // Обновляем админа не чаще раза в минуту
         if (TgSession::getChat()->updated_at->timestamp < strtotime('-1 minutes')) {
             $chatID = TgSession::getChat()->chat_id;

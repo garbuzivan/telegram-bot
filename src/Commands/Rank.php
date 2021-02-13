@@ -35,7 +35,7 @@ class Rank extends AbstractCommand
 
         TgSession::getApi()->sendMessage([
             'chat_id' => TgSession::getParam('message.chat.id'),
-            'text' => $user->link(),
+            'text' => $user->link() . ' ' . TgSession::getCall(),
         ]);
 
         $request['Rank'] = true;
