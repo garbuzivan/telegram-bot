@@ -13,15 +13,15 @@ class Web extends Controller
 {
     public function webhook()
     {
-        (new TelegramBot())->webhook();
+        return (new TelegramBot())->webhook();
     }
     public function message()
     {
-        (new TelegramBot())->message();
+        return (new TelegramBot())->message();
     }
     public function messageBot()
     {
-        (new TelegramBot())->messageBot();
+        return (new TelegramBot())->messageBot();
     }
 
     public function chats()
