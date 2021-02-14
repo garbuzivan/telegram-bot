@@ -185,6 +185,16 @@ class ParserBot
             'chat_id' => TgSession::getParam('message.chat.id'),
             'text' => '<b>' . $user->link() . "</b> теперь с нами в чате! \xF0\x9F\x8E\x89",
         ]);
+
+        $friendID = TgSession::getParam('message.from.id');
+        if (!is_null($friendID)) {
+            TgBotUser::where('tg_id', $friendID)
+                ->update([
+                    'friend' => DB::raw('friend+1'),
+                    'last_time' => Carbon::now()
+                ]);
+        }
+
     }
 
     /**
