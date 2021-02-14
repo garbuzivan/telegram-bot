@@ -136,4 +136,27 @@ class ParserBot
         }
     }
 
+    /**
+     *
+     */
+    public function addChatUser()
+    {
+
+    }
+
+    /**
+     *
+     */
+    public function newChatUser()
+    {
+
+    }
+
+    /**
+     *
+     */
+    public function deleteChatUser()
+    {
+
+    }
 }
