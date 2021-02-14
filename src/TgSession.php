@@ -170,11 +170,11 @@ class TgSession
         return mb_strtolower($str[0]);
     }
 
-    public static function getCallParam(): string
+    public static function getCallParam(): ?string
     {
         $text = self::getParam('message.text');
         $text = str_replace(['/ ', '! '], null, $text);
         $str = explode(' ', $text, 2);
-        return $str[1];
+        return $str[1] ?? null;
     }
 }
