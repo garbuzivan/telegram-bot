@@ -19,6 +19,11 @@ abstract class AbstractCommand
     public string $description;
 
     /**
+     * @var int
+     */
+    public int $price = 0;
+
+    /**
      * @param $request
      * @param Closure $next
      */
