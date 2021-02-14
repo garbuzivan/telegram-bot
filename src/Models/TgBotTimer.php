@@ -8,7 +8,7 @@ use Illuminate\Database\Query\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class TgBotBonus extends Model
+class TgBotTimer extends Model
 {
     use HasFactory;
 
@@ -19,5 +19,7 @@ class TgBotBonus extends Model
      */
     protected $fillable = [
         'user_id',
+        'chat_id',
+        'param',
     ];
 }

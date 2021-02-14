@@ -49,22 +49,8 @@ class TgBotUser extends Model
         return '<a href="tg://user?id=' . $this->tg_id . '">' . $this->fullname() . '</a>';
     }
 
-    public function bonus()
+    public function timer()
     {
-        return $this->hasOne('\GarbuzIvan\TelegramBot\Models\TgBotBonus', 'tg_id', 'user_id');
-    }
-
-    public function activeBonus()
-    {
-        if (
-            !isset($this->bonus) ||
-            is_null($this->bonus) ||
-            !isset($this->bonus->created_at) ||
-            $this->bonus->timestamp > strtotime('-6 hours')
-        )
-        {
-            return false;
-        }
-        return true;
+        return $this->hasMany('\GarbuzIvan\TelegramBot\Models\TgBotTimer', 'tg_id', 'user_id');
     }
 }
