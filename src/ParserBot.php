@@ -142,7 +142,15 @@ class ParserBot
      */
     public function updateChatUser()
     {
+        if(is_null(TgSession::getUser())){
+            return false;
+        }
+        TgSession::getApi()->sendMessage([
+            'chat_id' => TgSession::getParam('message.chat.id'),
+            'text' => json_encode(TgSession::getUser()->chats()),
+        ]);
 
+        //$user = TgBotChatUsers::where('chat_id', )->where('user_id', TgSession::getUser()->tg_id)->first();
     }
 
     /**
