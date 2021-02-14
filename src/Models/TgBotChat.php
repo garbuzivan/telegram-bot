@@ -30,4 +30,9 @@ class TgBotChat extends Model
     {
         return $this->hasMany('\GarbuzIvan\TelegramBot\Models\TgBotTimer', 'chat_id', 'chat_id');
     }
+
+    public function users()
+    {
+        return $this->hasMany('\GarbuzIvan\TelegramBot\Models\TgBotChatUsers', 'chat_id', 'chat_id');
+    }
 }
