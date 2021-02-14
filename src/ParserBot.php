@@ -7,6 +7,7 @@ namespace GarbuzIvan\TelegramBot;
 use Carbon\Carbon;
 use GarbuzIvan\TelegramBot\Models\TgBotChat;
 use GarbuzIvan\TelegramBot\Models\TgBotChatAdmin;
+use GarbuzIvan\TelegramBot\Models\TgBotChatUsers;
 use GarbuzIvan\TelegramBot\Models\TgBotMessage;
 use GarbuzIvan\TelegramBot\Models\TgBotUser;
 use Illuminate\Support\Facades\DB;
@@ -113,7 +114,7 @@ class ParserBot
 
     public function updateAdmin()
     {
-        if(TgSession::getChat()->chat_id > 0){
+        if (TgSession::getChat()->chat_id > 0) {
             return false;
         }
         // Обновляем админа не чаще раза в минуту
@@ -139,7 +140,7 @@ class ParserBot
     /**
      *
      */
-    public function addChatUser()
+    public function updateChatUser()
     {
 
     }
@@ -153,10 +154,22 @@ class ParserBot
     }
 
     /**
-     *
+     * Пользователь покинул чат
      */
     public function deleteChatUser()
     {
+        $userID = TgSession::getParam('left_chat_member.id');
+        if (is_null($userID)) {
+            return false;
+        }
+        $chatID = TgSession::getParam('chat.id');
 
+        TgBotChatUsers::where('chat_id', $chatID)->where('user_id', $userID)->delete();
+        $user = TgBotUser::where('tg_id', $userID)->first();
+
+        TgSession::getApi()->sendMessage([
+            'chat_id' => TgSession::getParam('message.chat.id'),
+            'text' => '<b>' . $user->link() . '</b> покинул(а) чат',
+        ]);
     }
 }
