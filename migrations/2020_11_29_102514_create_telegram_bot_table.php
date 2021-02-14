@@ -24,10 +24,11 @@ class CreateTelegramBotTable extends Migration
             $table->string('sex')->nullable(); // пол
             $table->integer('message_count')->default(0); //  количество сообщений
             $table->bigInteger('money')->default(0); //  баланс
-            $table->integer('rank')->nullable(); //  ранк
-            $table->integer('penis')->nullable(); // пенис
-            $table->integer('boobs')->nullable(); // сиськи
-            $table->integer('vagina')->nullable(); // глубина влагалища
+            $table->integer('rank')->default(0); //  ранк
+            $table->integer('penis')->default(0); // пенис
+            $table->integer('boobs')->default(0); // сиськи
+            $table->integer('vagina')->default(0); // глубина влагалища
+            $table->integer('friend')->default(0); // Сколько пригласил
             $table->string('title')->nullable(); // Звание
             $table->timestamps();
         });
