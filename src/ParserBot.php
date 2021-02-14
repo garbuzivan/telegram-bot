@@ -163,18 +163,18 @@ class ParserBot
      */
     public function newChatUser()
     {
-        $userID = TgSession::getParam('new_chat_member.id');
+        $userID = TgSession::getParam('message.new_chat_member.id');
         if (is_null($userID)) {
             return false;
         }
-        $chatID = TgSession::getParam('chat.id');
+        $chatID = TgSession::getParam('message.chat.id');
 
         $insert = [
-            'tg_id' => $userID,
-            'is_bot' => TgSession::getParam('new_chat_member.is_bot'),
-            'username' => TgSession::getParam('new_chat_member.username'),
-            'first_name' => TgSession::getParam('new_chat_member.first_name'),
-            'last_name' => TgSession::getParam('new_chat_member.last_name'),
+            'id' => $userID,
+            'is_bot' => TgSession::getParam('message.new_chat_member.is_bot'),
+            'username' => TgSession::getParam('message.new_chat_member.username'),
+            'first_name' => TgSession::getParam('message.new_chat_member.first_name'),
+            'last_name' => TgSession::getParam('message.new_chat_member.last_name'),
         ];
         $user = $this->firstOrCreate($insert);
         TgBotChatUsers::create([
@@ -192,11 +192,11 @@ class ParserBot
      */
     public function deleteChatUser()
     {
-        $userID = TgSession::getParam('left_chat_member.id');
+        $userID = TgSession::getParam('message.left_chat_member.id');
         if (is_null($userID)) {
             return false;
         }
-        $chatID = TgSession::getParam('chat.id');
+        $chatID = TgSession::getParam('message.chat.id');
 
         TgBotChatUsers::where('chat_id', $chatID)->where('user_id', $userID)->delete();
         $user = TgBotUser::where('tg_id', $userID)->first();
