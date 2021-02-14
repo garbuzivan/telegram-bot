@@ -145,12 +145,17 @@ class ParserBot
         if(is_null(TgSession::getUser())){
             return false;
         }
-        TgSession::getApi()->sendMessage([
-            'chat_id' => TgSession::getParam('message.chat.id'),
-            'text' => json_encode(TgSession::getUser()->chats()),
-        ]);
-
-        //$user = TgBotChatUsers::where('chat_id', )->where('user_id', TgSession::getUser()->tg_id)->first();
+        $chats = [];
+        $chatsDB = TgSession::getUser()->chats();
+        foreach($chatsDB as $chat){
+            $chats[$chat->chat_id] = $chat;
+        }
+        if(!isset($chats[TgSession::getChat()->chat_id])){
+            TgBotChatUsers::create([
+                'chat_id' => TgSession::getChat()->chat_id,
+                'user_id' => TgSession::getUser()->tg_id,
+            ]);
+        }
     }
 
     /**
@@ -158,7 +163,28 @@ class ParserBot
      */
     public function newChatUser()
     {
+        $userID = TgSession::getParam('new_chat_member.id');
+        if (is_null($userID)) {
+            return false;
+        }
+        $chatID = TgSession::getParam('chat.id');
 
+        $insert = [
+            'tg_id' => $userID,
+            'is_bot' => TgSession::getParam('new_chat_member.is_bot'),
+            'username' => TgSession::getParam('new_chat_member.username'),
+            'first_name' => TgSession::getParam('new_chat_member.first_name'),
+            'last_name' => TgSession::getParam('new_chat_member.last_name'),
+        ];
+        $user = $this->firstOrCreate($insert);
+        TgBotChatUsers::create([
+            'chat_id' => $chatID,
+            'user_id' => $userID,
+        ]);
+        TgSession::getApi()->sendMessage([
+            'chat_id' => TgSession::getParam('message.chat.id'),
+            'text' => '<b>' . $user->link() . "</b> теперь с нами в чате! \xF0\x9F\x8E\x89",
+        ]);
     }
 
     /**
@@ -177,7 +203,7 @@ class ParserBot
 
         TgSession::getApi()->sendMessage([
             'chat_id' => TgSession::getParam('message.chat.id'),
-            'text' => '<b>' . $user->link() . '</b> покинул(а) чат',
+            'text' => '<b>' . $user->link() . "</b> покинул(а) чат! \xF0\x9F\x8F\x83",
         ]);
     }
 }

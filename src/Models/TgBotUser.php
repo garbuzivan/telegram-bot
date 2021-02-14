@@ -51,11 +51,11 @@ class TgBotUser extends Model
 
     public function timer()
     {
-        return $this->hasMany('\GarbuzIvan\TelegramBot\Models\TgBotTimer', 'tg_id', 'user_id');
+        return $this->belongsTo('\GarbuzIvan\TelegramBot\Models\TgBotTimer', 'tg_id', 'user_id');
     }
 
     public function chats()
     {
-        return $this->hasMany('\GarbuzIvan\TelegramBot\Models\TgBotChatUsers', 'user_id', 'user_id');
+        return TgBotChatUsers::where('user_id', $this->tg_id)->get();
     }
 }
