@@ -313,12 +313,17 @@ class Rank extends AbstractCommand
      */
     private function like($request)
     {
-        if (isset($request['like']) || is_null(TgSession::getUserReply())) {
+        if (
+            isset($request['like'])
+            || is_null(TgSession::getUserReply())
+            || is_null(TgSession::getParam('message.text'))
+            || mb_strlen(trim(TgSession::getParam('message.text'))) == 0
+        ) {
             return $request;
         }
         $text = TgSession::getParam('message.text');
         if (
-            preg_match("~(\u{1F60D}|\u{2764}|\u{1F381}|\u{1F37B}|\u{1F37A}|\u{1F382}|\u{1F444}|\u{1F445}|\u{1F48B}|\u{1F48C}|\u{1F48F}|\u{1F493}|\u{1F494}|\u{1F495}|\u{1F496}|\u{1F497}|\u{1F498}|\u{1F499}|\u{1F49A}|\u{1F49B}|\u{1F49C}|\u{1F49D}|\u{1F49E}|\u{1F49F})~u", $text)
+            preg_match("~(\u{1F60D}|\u{2764}|\u{1F381}|\u{1F37B}|\u{1F37A}|\u{1F382}|\u{1F444}|\u{1F445}|\u{1F48B}|\u{1F48C}|\u{1F48F}|\u{1F493}|\u{1F494}|\u{1F495}|\u{1F496}|\u{1F497}|\u{1F498}|\u{1F499}|\u{1F49A}|\u{1F49B}|\u{1F49C}|\u{1F49D}|\u{1F49E}|\u{1F49F})~ui", $text)
             || preg_match("~\u{1F44D}~u", $text)
             || trim($text) == '+'
         ) {
@@ -346,7 +351,12 @@ class Rank extends AbstractCommand
      */
     private function dislike($request)
     {
-        if (isset($request['dislike']) || is_null(TgSession::getUserReply())) {
+        if (
+            isset($request['dislike'])
+            || is_null(TgSession::getUserReply())
+            || is_null(TgSession::getParam('message.text'))
+            || mb_strlen(trim(TgSession::getParam('message.text'))) == 0
+        ) {
             return $request;
         }
         $text = TgSession::getParam('message.text');
@@ -511,6 +521,8 @@ class Rank extends AbstractCommand
             isset($request['title'])
             || !in_array(TgSession::getCall(), ['/title', '!звание'])
             || TgSession::getChat()->chat_id > 0
+            || is_null(TgSession::getCallParam())
+            || mb_strlen(trim(TgSession::getCallParam())) == 0
         ) {
             return $request;
         }
@@ -518,7 +530,7 @@ class Rank extends AbstractCommand
         $users = [];
         $usersChat = TgSession::getChat()->users;
         foreach ($usersChat as $user) {
-            if (!TgSession::getTimer($user->info, 'title', '-6 hours')) {
+            if (!TgSession::getTimer($user->info, 'title', 6)) {
                 continue;
             }
             $users[$user->tg_id] = $user;
@@ -535,7 +547,7 @@ class Rank extends AbstractCommand
         $userRand = $users[array_rand($users)];
 
         TgBotUserTitle::create([
-            'user_id' => TgSession::getUser()->tg_id,
+            'user_id' => $userRand->user_id,
             'title' => TgSession::getCallParam(),
         ]);
 

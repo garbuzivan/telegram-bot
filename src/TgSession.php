@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace GarbuzIvan\TelegramBot;
 
+use Carbon\Carbon;
 use GarbuzIvan\TelegramBot\Models\TgBotChat;
 use GarbuzIvan\TelegramBot\Models\TgBotTimer;
 use GarbuzIvan\TelegramBot\Models\TgBotUser;
@@ -192,22 +193,23 @@ class TgSession
     /**
      * @param TgBotUser $user
      * @param string $param
-     * @param string $strtotime
+     * @param int $strtotime
      * @return bool
      */
-    public static function getTimer(TgBotUser $user, string $param, string $strtotime = '-6 hours'): bool
+    public static function getTimer(TgBotUser $user, string $param, int $strtotime = 6): bool
     {
-        $timerUser = $user->timer;
+        $timerUser = $user->timer()->where('created_at', '>', Carbon::now()->subHours($strtotime))->get();
+        TgSession::getApi()->sendMessage([
+            'chat_id' => TgSession::getParam('message.chat.id'),
+            'text' => json_encode($timerUser),
+        ]);
         foreach ($timerUser as $timer) {
             if ($timer->param != $param) {
                 continue;
             }
-            if ($timer->created_at->timestamp > strtotime($strtotime)) {
-                return false;
-            }
-            TgBotTimer::where('user_id', $user->tg_id)->where('param', $param)->delete();
-            break;
+            return false;
         }
+        TgBotTimer::where('user_id', $user->tg_id)->where('param', $param)->delete();
         return true;
     }
 }
