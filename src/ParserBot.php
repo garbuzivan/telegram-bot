@@ -230,23 +230,27 @@ class ParserBot
     public function userRename()
     {
         if (
-            TgSession::getUser()->first_name != TgSession::getParam('message.from.first_name')
-            || TgSession::getUser()->last_name != TgSession::getParam('message.from.last_name')
+            is_null(TgSession::getUser())
+            || (
+                TgSession::getUser()->first_name == TgSession::getParam('message.from.first_name')
+                && TgSession::getUser()->last_name == TgSession::getParam('message.from.last_name')
+            )
         ) {
-            $oldName = TgSession::getUser()->link();
-            TgBotUserRename::create([
-                'user_id' => TgSession::getUser()->tg_id,
-                'name' => TgSession::getUser()->fullname(),
-            ]);
-            TgBotUser::where('tg_id', TgSession::getUser()->tg_id)->update([
-                'first_name' => TgSession::getParam('message.from.first_name'),
-                'last_name' => TgSession::getParam('message.from.last_name'),
-            ]);
-            TgSession::setUser(TgBotUser::where('id', TgSession::getUser()->id)->first());
-            TgSession::getApi()->sendMessage([
-                'chat_id' => TgSession::getParam('message.chat.id'),
-                'text' => $oldName . ' изменил(а) имя на ' . TgSession::getUser()->link(),
-            ]);
+            return false;
         }
+        $oldName = TgSession::getUser()->link();
+        TgBotUserRename::create([
+            'user_id' => TgSession::getUser()->tg_id,
+            'name' => TgSession::getUser()->fullname(),
+        ]);
+        TgBotUser::where('tg_id', TgSession::getUser()->tg_id)->update([
+            'first_name' => TgSession::getParam('message.from.first_name'),
+            'last_name' => TgSession::getParam('message.from.last_name'),
+        ]);
+        TgSession::setUser(TgBotUser::where('id', TgSession::getUser()->id)->first());
+        TgSession::getApi()->sendMessage([
+            'chat_id' => TgSession::getParam('message.chat.id'),
+            'text' => $oldName . ' изменил(а) имя на ' . TgSession::getUser()->link(),
+        ]);
     }
 }

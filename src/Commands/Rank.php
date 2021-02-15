@@ -481,6 +481,9 @@ class Rank extends AbstractCommand
      */
     private function ban($request)
     {
+        if(is_null(TgSession::getChat())){
+            return $request;
+        }
         $users = TgSession::getChat()->users;
         foreach ($users as $user) {
             if ($user->user_id != TgSession::getUser()->tg_id) {

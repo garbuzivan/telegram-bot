@@ -30,17 +30,17 @@ class TgSession
     /**
      * @var TgBotUser|null
      */
-    protected static ?TgBotUser $user;
+    protected static ?TgBotUser $user = null;
 
     /**
      * @var TgBotUser|null
      */
-    protected static ?TgBotUser $userReply;
+    protected static ?TgBotUser $userReply = null;
 
     /**
      * @var TgBotChat|null
      */
-    protected static ?TgBotChat $chat;
+    protected static ?TgBotChat $chat = null;
 
     /**
      * @param Configuration $config
@@ -144,15 +144,17 @@ class TgSession
     protected static function parserWebHook(): void
     {
         $parser = new ParserBot();
-        self::setUser($parser->getUser(self::getParam('message.from')));
-        self::setUserReply($parser->getUser(self::getParam('message.reply_to_message.from')));
-        self::setChat($parser->getChat());
-        $parser->updateChatUser();
-        $parser->newChatUser();
-        $parser->deleteChatUser();
-        $parser->updateAdmin();
-        $parser->userRename();
-        $parser->newMessage(self::getParam('message'), self::getParam('update_id'));
+        if (!is_null(self::getParam('message.from'))) {
+            self::setUser($parser->getUser(self::getParam('message.from')));
+            self::setUserReply($parser->getUser(self::getParam('message.reply_to_message.from')));
+            self::setChat($parser->getChat());
+            $parser->updateChatUser();
+            $parser->newChatUser();
+            $parser->deleteChatUser();
+            $parser->updateAdmin();
+            $parser->userRename();
+            $parser->newMessage(self::getParam('message'), self::getParam('update_id'));
+        }
     }
 
     /**
@@ -175,7 +177,7 @@ class TgSession
     public static function getCall(): ?string
     {
         $text = self::aliasComand();
-        if(is_null($text)){
+        if (is_null($text)) {
             return null;
         }
         $str = explode(' ', $text, 2);
@@ -190,7 +192,7 @@ class TgSession
     public static function getCallParam(): ?string
     {
         $text = self::aliasComand();
-        if(is_null($text)){
+        if (is_null($text)) {
             return null;
         }
         $str = explode(' ', $text, 2);
@@ -223,7 +225,7 @@ class TgSession
     public static function aliasComand(): ?string
     {
         $text = self::getParam('message.text');
-        if(is_null($text)){
+        if (is_null($text)) {
             return null;
         }
         $alias = [
