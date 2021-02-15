@@ -235,7 +235,7 @@ class ParserBot
         ) {
             TgBotUserRename::create([
                 'user_id' => TgSession::getUser()->tg_id,
-                'title' => TgSession::getUser()->fullname(),
+                'name' => TgSession::getUser()->fullname(),
             ]);
             TgBotUser::where('tg_id', TgSession::getUser()->tg_id)->update([
                 'first_name' => TgSession::getParam('message.from.first_name'),
