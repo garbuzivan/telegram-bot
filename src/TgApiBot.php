@@ -22,6 +22,20 @@ class TgApiBot extends \Telegram\Bot\Api
         $parser->newMessage($message->toArray(), 0);
         return $message;
     }
+
+    public function deleteMessage(array $params)
+    {
+        try {
+            return parent::deleteMessage($params);
+        } catch (TelegramSDKException $e) {
+            parent::sendMessage([
+                'chat_id' => TgSession::getParam('message.chat.id'),
+                'parse_mode' => 'HTML',
+                'text' => 'Боту необходимы права администратора для корректной работы!',
+            ]);
+        }
+        return null;
+    }
     //    /**
     //     * @param array $callback_query_id
     //     * @param null $text
