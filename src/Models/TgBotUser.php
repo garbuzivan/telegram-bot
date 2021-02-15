@@ -84,6 +84,7 @@ class TgBotUser extends Model
             if ($timer->created_at->timestamp > strtotime($strtotime)) {
                 return false;
             }
+            TgBotTimer::where('user_id', $user->tg_id)->where('param', $param)->delete();
             break;
         }
         return true;

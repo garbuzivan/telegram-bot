@@ -61,6 +61,18 @@ class Rank extends AbstractCommand
             $user = TgSession::getUser();
         }
 
+        $titles=null;
+        $titlesUser = TgSession::getUser()->titles->orderBy('created_at', 'DESC')->take(5)->get();
+        foreach ($titlesUser as $title) {
+            $titles .= "\xF0\x9F\x91\x89 " . $title->title . ' - ' . $title->created_at->format('H:i d.m.Y') . "\n";
+        }
+
+        $renames=null;
+        $renamesUser = TgSession::getUser()->rename->orderBy('created_at', 'DESC')->take(5)->get();
+        foreach ($renamesUser as $rename) {
+            $renames .= "\xF0\x9F\x91\x89 " . $rename->name . ' - ' . $rename->created_at->format('H:i d.m.Y') . "\n";
+        }
+
         $text = "<b>Имя:</b> " . $user->link();
         $text .= "\n<b>Пол:</b> " . $user->getSex();
         $text .= "\n<b>Баланс:</b> " . number_format($user->money, 0, '', ' ') . " \xF0\x9F\x92\xB0";
@@ -77,6 +89,8 @@ class Rank extends AbstractCommand
         }
         $text .= "\n<b>Лайки:</b> " . $user->like . " \xF0\x9F\x91\x8D";
         $text .= "\n<b>Дизлайки:</b> " . $user->dislike . " \xF0\x9F\x91\x8E";
+        $text .= "\n\n<b>Звания:</b>" . $titles;
+        $text .= "\n\n<b>Последние имена:</b>" . $renames;
         $text .= "\n\n" . $user->tg_id;
         $text .= "\n\n\xF0\x9F\x98\x8F " . TgSession::getUser()->link() . "\n";
 
@@ -94,6 +108,11 @@ class Rank extends AbstractCommand
         return $request;
     }
 
+    /**
+     * @param $request
+     * @return mixed
+     * @throws TelegramSDKException
+     */
     private function setSex($request)
     {
         $sexList = [
@@ -128,6 +147,11 @@ class Rank extends AbstractCommand
         return $request;
     }
 
+    /**
+     * @param $request
+     * @return mixed
+     * @throws TelegramSDKException
+     */
     private function setPenis($request)
     {
         if (
@@ -175,6 +199,11 @@ class Rank extends AbstractCommand
         return $request;
     }
 
+    /**
+     * @param $request
+     * @return mixed
+     * @throws TelegramSDKException
+     */
     private function setBoobs($request)
     {
         if (
@@ -225,6 +254,11 @@ class Rank extends AbstractCommand
         return $request;
     }
 
+    /**
+     * @param $request
+     * @return mixed
+     * @throws TelegramSDKException
+     */
     private function setVagina($request)
     {
         if (
@@ -272,6 +306,11 @@ class Rank extends AbstractCommand
         return $request;
     }
 
+    /**
+     * @param $request
+     * @return mixed
+     * @throws TelegramSDKException
+     */
     private function like($request)
     {
         if (isset($request['like']) || is_null(TgSession::getUserReply())) {
@@ -300,6 +339,11 @@ class Rank extends AbstractCommand
         return $request;
     }
 
+    /**
+     * @param $request
+     * @return mixed
+     * @throws TelegramSDKException
+     */
     private function dislike($request)
     {
         if (isset($request['dislike']) || is_null(TgSession::getUserReply())) {
@@ -327,6 +371,11 @@ class Rank extends AbstractCommand
         return $request;
     }
 
+    /**
+     * @param $request
+     * @return mixed
+     * @throws TelegramSDKException
+     */
     private function active($request)
     {
         $activeList = [
@@ -361,6 +410,11 @@ class Rank extends AbstractCommand
         return $request;
     }
 
+    /**
+     * @param $request
+     * @return mixed
+     * @throws TelegramSDKException
+     */
     private function setBan($request)
     {
         $banList = [
@@ -409,6 +463,11 @@ class Rank extends AbstractCommand
         return $request;
     }
 
+    /**
+     * @param $request
+     * @return mixed
+     * @throws TelegramSDKException
+     */
     private function ban($request)
     {
         $users = TgSession::getChat()->users;
@@ -441,6 +500,11 @@ class Rank extends AbstractCommand
         return $request;
     }
 
+    /**
+     * @param $request
+     * @return false
+     * @throws TelegramSDKException
+     */
     private function title($request)
     {
         if (
@@ -472,7 +536,7 @@ class Rank extends AbstractCommand
 
         TgBotUserTitle::create([
             'user_id' => TgSession::getUser()->id,
-            'title' => ,
+            'title' => TgSession::getCallParam(),
         ]);
 
         TgSession::getApi()->sendMessage([
