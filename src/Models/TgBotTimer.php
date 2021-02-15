@@ -12,7 +12,7 @@ class TgBotTimer extends Model
 {
     use HasFactory;
 
-    protected $table = 'gi_tb_bonus';
+    protected $table = 'gi_tb_timer';
 
     /**
      * @var array<string> $fillable
