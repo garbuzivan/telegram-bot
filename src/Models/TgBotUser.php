@@ -49,6 +49,11 @@ class TgBotUser extends Model
         return '<a href="tg://user?id=' . $this->tg_id . '">' . $this->fullname() . '</a>';
     }
 
+    public function getSex()
+    {
+        return !is_null($this->sex) && mb_strlen($this->sex) > 0 ? $this->sex : 'Пол можно установить командой !парень или !девушка';
+    }
+
     public function timer()
     {
         return $this->belongsTo('\GarbuzIvan\TelegramBot\Models\TgBotTimer', 'tg_id', 'user_id');
