@@ -114,7 +114,7 @@ class ParserBot
 
     public function updateAdmin()
     {
-        if (TgSession::getChat()->chat_id > 0) {
+        if (!isset(TgSession::getChat()->chat_id) || TgSession::getChat()->chat_id > 0) {
             return false;
         }
         // Обновляем админа не чаще раза в минуту
@@ -142,15 +142,15 @@ class ParserBot
      */
     public function updateChatUser()
     {
-        if(is_null(TgSession::getUser())){
+        if (is_null(TgSession::getUser())) {
             return false;
         }
         $chats = [];
         $chatsDB = TgSession::getUser()->chats();
-        foreach($chatsDB as $chat){
+        foreach ($chatsDB as $chat) {
             $chats[$chat->chat_id] = $chat;
         }
-        if(!isset($chats[TgSession::getChat()->chat_id])){
+        if (!isset($chats[TgSession::getChat()->chat_id])) {
             TgBotChatUsers::create([
                 'chat_id' => TgSession::getChat()->chat_id,
                 'user_id' => TgSession::getUser()->tg_id,
@@ -210,6 +210,10 @@ class ParserBot
 
         TgBotChatUsers::where('chat_id', $chatID)->where('user_id', $userID)->delete();
         $user = TgBotUser::where('tg_id', $userID)->first();
+
+        if (is_null($user)) {
+            return false;
+        }
 
         TgSession::getApi()->sendMessage([
             'chat_id' => TgSession::getParam('message.chat.id'),
