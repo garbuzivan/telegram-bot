@@ -510,7 +510,6 @@ class Rank extends AbstractCommand
         if (
             isset($request['title'])
             || !in_array(TgSession::getCall(), ['/title', '!звание'])
-            || is_null(TgSession::getUserReply())
         ) {
             return $request;
         }
@@ -518,7 +517,7 @@ class Rank extends AbstractCommand
         $users = [];
         $usersChat = TgSession::getChat()->users;
         foreach ($usersChat as $user) {
-            if (!TgBotUser::getTimer($user, 'title', '-6 hours')) {
+            if (!TgSession::getTimer($user, 'title', '-6 hours')) {
                 continue;
             }
             $users[$user->tg_id] = $user;

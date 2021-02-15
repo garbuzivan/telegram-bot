@@ -73,20 +73,4 @@ class TgBotUser extends Model
     {
         return $this->hasMany('\GarbuzIvan\TelegramBot\Models\TgBotUserTitle', 'user_id', 'tg_id');
     }
-
-    public function getTimer(TgBotUser $user, string $param, string $strtotime = '-6 hours'): bool
-    {
-        $timerUser = $user->timer;
-        foreach ($timerUser as $timer) {
-            if ($timer->param != $param) {
-                continue;
-            }
-            if ($timer->created_at->timestamp > strtotime($strtotime)) {
-                return false;
-            }
-            TgBotTimer::where('user_id', $user->tg_id)->where('param', $param)->delete();
-            break;
-        }
-        return true;
-    }
 }

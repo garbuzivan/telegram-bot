@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace GarbuzIvan\TelegramBot;
 
 use GarbuzIvan\TelegramBot\Models\TgBotChat;
+use GarbuzIvan\TelegramBot\Models\TgBotTimer;
 use GarbuzIvan\TelegramBot\Models\TgBotUser;
 
 class TgSession
@@ -166,6 +167,9 @@ class TgSession
         return $commands;
     }
 
+    /**
+     * @return string
+     */
     public static function getCall(): string
     {
         $text = self::getParam('message.text');
@@ -174,11 +178,36 @@ class TgSession
         return mb_strtolower($str[0]);
     }
 
+    /**
+     * @return string|null
+     */
     public static function getCallParam(): ?string
     {
         $text = self::getParam('message.text');
         $text = str_replace(['/ ', '! '], null, $text);
         $str = explode(' ', $text, 2);
         return $str[1] ?? null;
+    }
+
+    /**
+     * @param TgBotUser $user
+     * @param string $param
+     * @param string $strtotime
+     * @return bool
+     */
+    public static function getTimer(TgBotUser $user, string $param, string $strtotime = '-6 hours'): bool
+    {
+        $timerUser = $user->timer;
+        foreach ($timerUser as $timer) {
+            if ($timer->param != $param) {
+                continue;
+            }
+            if ($timer->created_at->timestamp > strtotime($strtotime)) {
+                return false;
+            }
+            TgBotTimer::where('user_id', $user->tg_id)->where('param', $param)->delete();
+            break;
+        }
+        return true;
     }
 }
