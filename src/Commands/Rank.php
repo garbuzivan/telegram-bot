@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace GarbuzIvan\TelegramBot\Commands;
 
 use Closure;
+use GarbuzIvan\TelegramBot\Models\TgBotChat;
 use GarbuzIvan\TelegramBot\Models\TgBotChatAdmin;
 use GarbuzIvan\TelegramBot\Models\TgBotChatUsers;
 use GarbuzIvan\TelegramBot\Models\TgBotUser;
+use GarbuzIvan\TelegramBot\Models\TgBotUserTitle;
 use GarbuzIvan\TelegramBot\TgSession;
 use Illuminate\Support\Facades\DB;
 use Telegram\Bot\Exceptions\TelegramSDKException;
@@ -39,6 +41,7 @@ class Rank extends AbstractCommand
         $request = $this->dislike($request);
         $request = $this->setBan($request);
         $request = $this->ban($request);
+        $request = $this->title($request);
         return $next($request);
     }
 
@@ -378,10 +381,10 @@ class Rank extends AbstractCommand
 
         $admins = [];
         $adminsChat = TgBotChatAdmin::where('chat_id', TgSession::getParam('message.chat.id'))->get();
-        foreach($adminsChat as $admin){
+        foreach ($adminsChat as $admin) {
             $admins[$admin->user_id] = $admin;
         }
-        if(!isset($admins[TgSession::getUser()->tg_id]) || isset($admins[TgSession::getUserReply()->tg_id])){
+        if (!isset($admins[TgSession::getUser()->tg_id]) || isset($admins[TgSession::getUserReply()->tg_id])) {
             return $request;
         }
 
@@ -409,19 +412,19 @@ class Rank extends AbstractCommand
     private function ban($request)
     {
         $users = TgSession::getChat()->users;
-        foreach($users as $user){
-            if($user->user_id != TgSession::getUser()->tg_id){
+        foreach ($users as $user) {
+            if ($user->user_id != TgSession::getUser()->tg_id) {
                 continue;
             }
-            if($user->ban == 0){
+            if ($user->ban == 0) {
                 return $request;
             }
             $admins = [];
             $adminsChat = TgBotChatAdmin::where('chat_id', TgSession::getParam('message.chat.id'))->get();
-            foreach($adminsChat as $admin){
+            foreach ($adminsChat as $admin) {
                 $admins[$admin->user_id] = $admin;
             }
-            if(isset($admins[$user->user_id])){
+            if (isset($admins[$user->user_id])) {
                 return $request;
             }
             TgSession::getApi()->sendMessage([
@@ -435,6 +438,54 @@ class Rank extends AbstractCommand
             ]);
             $request['ban'] = true;
         }
+        return $request;
+    }
+
+    private function title($request)
+    {
+        if (
+            isset($request['title'])
+            || !in_array(TgSession::getCall(), ['/title', '!звание'])
+            || is_null(TgSession::getUserReply())
+        ) {
+            return $request;
+        }
+
+        $users = [];
+        $usersChat = TgSession::getChat()->users;
+        foreach ($usersChat as $user) {
+            if (!TgBotUser::getTimer($user, 'title', '-6 hours')) {
+                continue;
+            }
+            $users[$user->tg_id] = $user;
+        }
+
+        if (count($users) == 0) {
+            TgSession::getApi()->sendMessage([
+                'chat_id' => TgSession::getParam('message.chat.id'),
+                'text' => "\xE2\x9B\x94 Звания невозможно выдавать пользователю чаще, чем раз в 6 часов!",
+            ]);
+            return false;
+        }
+
+        $userRand = $users[array_rand($users)];
+
+        TgBotUserTitle::create([
+            'user_id' => TgSession::getUser()->id,
+            'title' => ,
+        ]);
+
+        TgSession::getApi()->sendMessage([
+            'chat_id' => TgSession::getParam('message.chat.id'),
+            'text' => "\xE2\x9C\x85 " . $userRand->link() . " присвоено звание " . TgSession::getCallParam() . "!",
+        ]);
+
+        TgSession::getApi()->deleteMessage([
+            'chat_id' => TgSession::getParam('message.chat.id'),
+            'message_id' => TgSession::getParam('message.message_id'),
+        ]);
+
+        $request['title'] = true;
         return $request;
     }
 }
