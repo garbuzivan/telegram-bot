@@ -24,7 +24,7 @@ class All extends AbstractCommand
      */
     public function handler($request, Closure $next)
     {
-        if (isset($request['All']) || !in_array(TgSession::getCall(), [$this->name])) {
+        if (isset($request['All']) || !in_array(TgSession::getCall(), [mb_strtolower($this->name)])) {
             return $next($request);
         }
 

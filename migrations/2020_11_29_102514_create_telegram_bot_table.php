@@ -44,6 +44,7 @@ class CreateTelegramBotTable extends Migration
             $table->id();
             $table->bigInteger('chat_id');
             $table->bigInteger('user_id');
+            $table->integer('active');
             $table->timestamps();
         });
 
@@ -76,6 +77,13 @@ class CreateTelegramBotTable extends Migration
             $table->string('param');
             $table->timestamps();
         });
+
+        Schema::create('gi_tb_user_title', function (Blueprint $table) {
+            $table->id();
+            $table->bigInteger('user_id');
+            $table->string('title');
+            $table->timestamps();
+        });
     }
 
     /**
@@ -90,5 +98,6 @@ class CreateTelegramBotTable extends Migration
         Schema::dropIfExists('gi_tb_chat_users');
         Schema::dropIfExists('gi_tb_messages');
         Schema::dropIfExists('gi_tb_timer');
+        Schema::dropIfExists('gi_tb_user_title');
     }
 }

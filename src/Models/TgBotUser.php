@@ -58,4 +58,9 @@ class TgBotUser extends Model
     {
         return TgBotChatUsers::where('user_id', $this->tg_id)->get();
     }
+
+    public function titles()
+    {
+        return TgBotUserTitle::where('user_id', $this->tg_id)->get();
+    }
 }

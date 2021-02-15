@@ -20,6 +20,7 @@ class TgBotChatUsers extends Model
     protected $fillable = [
         'chat_id',
         'user_id',
+        'active',
     ];
 
     public function info()
