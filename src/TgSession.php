@@ -162,7 +162,7 @@ class TgSession
     {
         $commands = [];
         $commandsClass = TgSession::$config->getCommands();
-        foreach($commandsClass as $class){
+        foreach ($commandsClass as $class) {
             $classNew = new $class;
             $commands[$classNew->name] = $classNew->description;
         }
@@ -172,10 +172,9 @@ class TgSession
     /**
      * @return string
      */
-    public static function getCall(): string
+    public static function getCall(): ?string
     {
-        $text = self::getParam('message.text');
-        $text = str_replace(['/ ', '! '], null, $text);
+        $text = self::aliasComand();
         $str = explode(' ', $text, 2);
         $comand = mb_strtolower($str[0]);
         $comand = str_replace(self::$config->getBotNames(), null, $comand);
@@ -187,8 +186,7 @@ class TgSession
      */
     public static function getCallParam(): ?string
     {
-        $text = self::getParam('message.text');
-        $text = str_replace(['/ ', '! '], null, $text);
+        $text = self::aliasComand();
         $str = explode(' ', $text, 2);
         return $str[1] ?? null;
     }
@@ -210,5 +208,26 @@ class TgSession
         }
         TgBotTimer::where('user_id', $user->user_id)->where('param', $param)->delete();
         return true;
+    }
+
+    /**
+     * @param string $text
+     * @return string
+     */
+    public static function aliasComand(): ?string
+    {
+        $text = self::getParam('message.text');
+        if(is_null($text)){
+            return null;
+        }
+        $alias = [
+            'ян покажи' => '!покажи',
+            'ян где' => '!где',
+            'ян кто' => '!кто',
+            'ян команды' => '/help',
+            '!команды' => '/help',
+        ];
+        $text = str_replace(array_keys($alias), array_values($alias), mb_strtolower($text));
+        return str_replace(['/ ', '! '], null, $text);
     }
 }

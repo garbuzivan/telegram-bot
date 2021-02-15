@@ -75,18 +75,4 @@ class TgApiBot extends \Telegram\Bot\Api
     //        return $admins;
     //    }
     //
-    //    /**
-    //     * @param array $chatId
-    //     * @param $messageId
-    //     * @return bool|\Telegram\Bot\Objects\Message|\Telegram\Bot\TelegramResponse
-    //     * @throws TelegramSDKException
-    //     */
-    //    public function deleteMessage($chatId, $messageId)
-    //    {
-    //        return $this->get('deleteMessage', [
-    //            'chat_id' => $chatId,
-    //            'message_id' => $messageId,
-    //        ]);
-    //    }
-    //
 }

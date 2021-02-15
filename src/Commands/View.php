@@ -6,6 +6,7 @@ namespace GarbuzIvan\TelegramBot\Commands;
 
 use Closure;
 use GarbuzIvan\TelegramBot\TgSession;
+use Telegram\Bot\FileUpload\InputFile;
 
 class View extends AbstractCommand
 {
@@ -24,21 +25,38 @@ class View extends AbstractCommand
      */
     public function handler($request, Closure $next)
     {
-        if (isset($request['All']) || !in_array(TgSession::getCall(), [$this->name])) {
+        if (
+            isset($request['View'])
+            || !in_array(TgSession::getCall(), ['/view', '!покажи', '!янпокажи', 'покажи'])
+            || is_null(TgSession::getCallParam())
+            || mb_strlen(trim(TgSession::getCallParam())) == 0
+        ) {
+            return $request;
+        }
+
+        $fact = trim(TgSession::getCallParam());
+        $content = file_get_contents('https://pixabay.com/api/?key=19741666-e0fbf1c991dedc9d161c31f92&q=' . urlencode($fact));
+        $content = json_decode($content, true);
+        $imgs = $content['hits'];
+
+        if (!is_array($imgs) || count($imgs) == 0) {
             return $next($request);
         }
+        $rand = array_rand($imgs);
+        $url = $imgs[$rand]['webformatURL'];
 
-        $user = TgSession::getUserReply();
-        if (is_null($user)) {
-            $user = TgSession::getUser();
-        }
-
-        TgSession::getApi()->sendMessage([
+        TgSession::getApi()->sendPhoto([
             'chat_id' => TgSession::getParam('message.chat.id'),
-            'text' => $user->link() . ': ' . $this->name . "\n" . TgSession::getCallParam(),
+            'photo' => InputFile::create($url, $fact),
+            'caption' => TgSession::getUser()->fullname() . ': ' . $fact,
         ]);
 
-        $request['Rank'] = true;
+        TgSession::getApi()->deleteMessage([
+            'chat_id' => TgSession::getParam('message.chat.id'),
+            'message_id' => TgSession::getParam('message.message_id'),
+        ]);
+
+        $request['View'] = true;
         return $next($request);
     }
 }
