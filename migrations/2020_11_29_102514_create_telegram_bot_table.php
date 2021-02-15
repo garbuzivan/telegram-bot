@@ -24,7 +24,8 @@ class CreateTelegramBotTable extends Migration
             $table->string('sex')->nullable(); // пол
             $table->integer('message_count')->default(0); //  количество сообщений
             $table->bigInteger('money')->default(0); //  баланс
-            $table->integer('rank')->default(0); //  ранк
+            $table->integer('like')->default(0); //  количество позитива
+            $table->integer('dislike')->default(0); //  количество негатива
             $table->integer('penis')->default(0); // пенис
             $table->integer('boobs')->default(0); // сиськи
             $table->integer('vagina')->default(0); // глубина влагалища
@@ -35,23 +36,23 @@ class CreateTelegramBotTable extends Migration
 
         Schema::create('gi_tb_chats', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('chat_id');
+            $table->bigInteger('chat_id')->references('chat_id')->on('gi_tb_chats');
             $table->string('chat_title')->nullable();
             $table->timestamps();
         });
 
         Schema::create('gi_tb_chat_users', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('chat_id');
-            $table->bigInteger('user_id');
-            $table->integer('active');
+            $table->bigInteger('chat_id')->references('chat_id')->on('gi_tb_chats');
+            $table->bigInteger('user_id')->references('tg_id')->on('gi_tb_user');
+            $table->integer('active')->default(1);
             $table->timestamps();
         });
 
         Schema::create('gi_tb_chat_admins', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('chat_id');
-            $table->integer('user_id');
+            $table->bigInteger('chat_id')->references('chat_id')->on('gi_tb_chats');
+            $table->integer('user_id')->references('tg_id')->on('gi_tb_user');;
             $table->timestamps();
         });
 
@@ -59,8 +60,8 @@ class CreateTelegramBotTable extends Migration
             $table->id();
             $table->bigInteger('update_id');
             $table->bigInteger('message_id');
-            $table->bigInteger('from_id');
-            $table->bigInteger('chat_id');
+            $table->bigInteger('from_id')->references('tg_id')->on('gi_tb_user');;
+            $table->bigInteger('chat_id')->references('chat_id')->on('gi_tb_chats');
             $table->string('chat_title')->nullable();
             $table->integer('date')->default(0);
             $table->bigInteger('reply_message_id')->nullable();
@@ -72,15 +73,15 @@ class CreateTelegramBotTable extends Migration
 
         Schema::create('gi_tb_timer', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('user_id');
-            $table->bigInteger('chat_id');
+            $table->bigInteger('user_id')->references('tg_id')->on('gi_tb_user');;
+            $table->bigInteger('chat_id')->references('chat_id')->on('gi_tb_chats');
             $table->string('param');
             $table->timestamps();
         });
 
         Schema::create('gi_tb_user_title', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('user_id');
+            $table->bigInteger('user_id')->references('tg_id')->on('gi_tb_user');;
             $table->string('title');
             $table->timestamps();
         });

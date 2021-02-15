@@ -12,7 +12,7 @@ class All extends AbstractCommand
     /**
      * @var string Command Name
      */
-    public string $name = "@Все";
+    public string $name = "/all";
 
     /**
      * @var string Command Description
@@ -24,20 +24,29 @@ class All extends AbstractCommand
      */
     public function handler($request, Closure $next)
     {
-        if (isset($request['All']) || !in_array(TgSession::getCall(), [mb_strtolower($this->name)])) {
+        if (isset($request['All']) || !in_array(TgSession::getCall(), [$this->name, "@все"])) {
             return $next($request);
         }
 
-        $user = TgSession::getUserReply();
-        if (is_null($user)) {
-            $user = TgSession::getUser();
+        $count = 0;
+        $text  = null;
+        $users = TgSession::getChat()->users();
+        foreach($users as $user){
+            if($user->active == 0){
+                continue;
+            }
+            $count++;
+            if(!is_null($text)){
+                $text .= ', ';
+            }
+            $text .= $user->info->link();
         }
-
-        TgSession::getApi()->sendMessage([
-            'chat_id' => TgSession::getParam('message.chat.id'),
-            'text' => $user->link() . ': ' . $this->name . "\n" . TgSession::getCallParam(),
-        ]);
-
+        if(!is_null($text)){
+            TgSession::getApi()->sendMessage([
+                'chat_id' => TgSession::getParam('message.chat.id'),
+                'text' => $user->link() . ': ' . TgSession::getCallParam() . "\n" . $text,
+            ]);
+        }
         $request['Rank'] = true;
         return $next($request);
     }
