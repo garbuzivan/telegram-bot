@@ -6,6 +6,7 @@ namespace GarbuzIvan\TelegramBot;
 
 use Carbon\Carbon;
 use GarbuzIvan\TelegramBot\Models\TgBotChat;
+use GarbuzIvan\TelegramBot\Models\TgBotChatUsers;
 use GarbuzIvan\TelegramBot\Models\TgBotTimer;
 use GarbuzIvan\TelegramBot\Models\TgBotUser;
 
@@ -191,25 +192,21 @@ class TgSession
     }
 
     /**
-     * @param TgBotUser $user
+     * @param TgBotChatUsers $user
      * @param string $param
      * @param int $strtotime
      * @return bool
      */
-    public static function getTimer(TgBotUser $user, string $param, int $strtotime = 6): bool
+    public static function getTimer(TgBotChatUsers $user, string $param, int $strtotime = 6): bool
     {
-        $timerUser = $user->timer()->where('created_at', '>', Carbon::now()->subHours($strtotime))->get();
-        TgSession::getApi()->sendMessage([
-            'chat_id' => TgSession::getParam('message.chat.id'),
-            'text' => json_encode($timerUser),
-        ]);
+        $timerUser = TgBotTimer::where('user_id', $user->user_id)->where('created_at', '>', Carbon::now()->subHours($strtotime))->get();
         foreach ($timerUser as $timer) {
             if ($timer->param != $param) {
                 continue;
             }
             return false;
         }
-        TgBotTimer::where('user_id', $user->tg_id)->where('param', $param)->delete();
+        TgBotTimer::where('user_id', $user->user_id)->where('param', $param)->delete();
         return true;
     }
 }

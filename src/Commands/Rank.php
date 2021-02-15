@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace GarbuzIvan\TelegramBot\Commands;
 
+use Carbon\Carbon;
 use Closure;
-use GarbuzIvan\TelegramBot\Models\TgBotChat;
 use GarbuzIvan\TelegramBot\Models\TgBotChatAdmin;
 use GarbuzIvan\TelegramBot\Models\TgBotChatUsers;
+use GarbuzIvan\TelegramBot\Models\TgBotTimer;
 use GarbuzIvan\TelegramBot\Models\TgBotUser;
 use GarbuzIvan\TelegramBot\Models\TgBotUserTitle;
 use GarbuzIvan\TelegramBot\TgSession;
@@ -530,7 +531,7 @@ class Rank extends AbstractCommand
         $users = [];
         $usersChat = TgSession::getChat()->users;
         foreach ($usersChat as $user) {
-            if (!TgSession::getTimer($user->info, 'title', 6)) {
+            if (!TgSession::getTimer($user, 'title', 6)) {
                 continue;
             }
             $users[$user->tg_id] = $user;
@@ -554,6 +555,12 @@ class Rank extends AbstractCommand
         TgSession::getApi()->sendMessage([
             'chat_id' => TgSession::getParam('message.chat.id'),
             'text' => "\xE2\x9C\x85 " . $userRand->info->link() . " присвоено звание " . TgSession::getCallParam() . "!",
+        ]);
+
+        TgBotTimer::create([
+            'user_id' => $userRand->user_id,
+            'chat_id' => TgSession::getParam('message.chat.id'),
+            'param' => 'title',
         ]);
 
         TgSession::getApi()->deleteMessage([
