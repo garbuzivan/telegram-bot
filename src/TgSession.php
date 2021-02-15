@@ -148,6 +148,7 @@ class TgSession
         $parser->newChatUser();
         $parser->deleteChatUser();
         $parser->updateAdmin();
+        $parser->userRename();
         $parser->newMessage(self::getParam('message'), self::getParam('update_id'));
     }
 

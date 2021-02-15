@@ -17,11 +17,7 @@ class TgBotUserTitle extends Model
      * @var array<string> $fillable
      */
     protected $fillable = [
-        'tg_id',
-        'is_bot',
-        'username',
-        'first_name',
-        'last_name',
+        'user_id',
         'title',
     ];
 }

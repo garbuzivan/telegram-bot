@@ -10,6 +10,8 @@ use GarbuzIvan\TelegramBot\Models\TgBotChatAdmin;
 use GarbuzIvan\TelegramBot\Models\TgBotChatUsers;
 use GarbuzIvan\TelegramBot\Models\TgBotMessage;
 use GarbuzIvan\TelegramBot\Models\TgBotUser;
+use GarbuzIvan\TelegramBot\Models\TgBotUserRename;
+use GarbuzIvan\TelegramBot\Models\TgBotUserTitle;
 use Illuminate\Support\Facades\DB;
 
 class ParserBot
@@ -219,5 +221,32 @@ class ParserBot
             'chat_id' => TgSession::getParam('message.chat.id'),
             'text' => '<b>' . $user->link() . "</b> покинул(а) чат! \xF0\x9F\x8F\x83",
         ]);
+    }
+
+
+    /**
+     * Пользователь переименовал себя
+     */
+    public function userRename()
+    {
+        if (
+            TgSession::getUser()->first_name != TgSession::getParam('message.from.first_name')
+            || TgSession::getUser()->last_name != TgSession::getParam('message.from.last_name')
+        ) {
+            TgBotUserRename::create([
+                'user_id' => TgSession::getUser()->tg_id,
+                'title' => TgSession::getUser()->fullname(),
+            ]);
+            TgBotUser::where('tg_id', TgSession::getUser()->tg_id)->update([
+                'first_name' => TgSession::getParam('message.from.first_name'),
+                'last_name' => TgSession::getParam('message.from.last_name'),
+            ]);
+            $oldName = TgSession::getUser()->link();
+            TgSession::setUser(TgBotUser::where('tg_id', TgSession::getParam('message.chat.id'))->first());
+            TgSession::getApi()->sendMessage([
+                'chat_id' => TgSession::getParam('message.chat.id'),
+                'text' => $oldName . ' изменил(а) имя на ' . TgSession::getUser()->link(),
+            ]);
+        }
     }
 }
