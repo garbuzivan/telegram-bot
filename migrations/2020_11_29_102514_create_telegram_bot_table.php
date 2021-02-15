@@ -46,6 +46,7 @@ class CreateTelegramBotTable extends Migration
             $table->bigInteger('chat_id')->references('chat_id')->on('gi_tb_chats');
             $table->bigInteger('user_id')->references('tg_id')->on('gi_tb_user');
             $table->integer('active')->default(1);
+            $table->integer('ban')->default(0);
             $table->timestamps();
         });
 

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace GarbuzIvan\TelegramBot\Commands;
 
 use Closure;
+use GarbuzIvan\TelegramBot\Models\TgBotChatAdmin;
 use GarbuzIvan\TelegramBot\Models\TgBotChatUsers;
 use GarbuzIvan\TelegramBot\Models\TgBotUser;
 use GarbuzIvan\TelegramBot\TgSession;
@@ -36,6 +37,8 @@ class Rank extends AbstractCommand
         $request = $this->active($request);
         $request = $this->like($request);
         $request = $this->dislike($request);
+        $request = $this->setBan($request);
+        $request = $this->ban($request);
         return $next($request);
     }
 
@@ -352,6 +355,86 @@ class Rank extends AbstractCommand
         ]);
 
         $request['active'] = true;
+        return $request;
+    }
+
+    private function setBan($request)
+    {
+        $banList = [
+            '/ban' => 1,
+            '/unban' => 0,
+            '!бан' => 1,
+            '!разбан' => 0,
+            'бан' => 1,
+            'разбан' => 0,
+        ];
+        if (
+            isset($request['setBan'])
+            || !in_array(TgSession::getCall(), array_keys($banList))
+            || is_null(TgSession::getUserReply())
+        ) {
+            return $request;
+        }
+
+        $admins = [];
+        $adminsChat = TgBotChatAdmin::where('chat_id', TgSession::getParam('message.chat.id'))->get();
+        foreach($adminsChat as $admin){
+            $admins[$admin->user_id] = $admin;
+        }
+        if(!isset($admins[TgSession::getUser()->tg_id]) || isset($admins[TgSession::getUserReply()->tg_id])){
+            return $request;
+        }
+
+        $ban = $banList[TgSession::getCall()];
+        TgBotChatUsers::where('user_id', TgSession::getUser()->id)
+            ->where('chat_id', TgSession::getParam('message.chat.id'))
+            ->update(['ban' => $ban]);
+
+        TgSession::getApi()->sendMessage([
+            'chat_id' => TgSession::getParam('message.chat.id'),
+            'text' => "\xF0\x9F\x90\x92 " . TgSession::getUser()->link() .
+                ' <b>' . ($ban == 0 ? 'разблокировал' : 'наказал') .
+                TgSession::getUserReply()->link() . "!</b> \xF0\x9F\x98\x9C!",
+        ]);
+
+        TgSession::getApi()->deleteMessage([
+            'chat_id' => TgSession::getParam('message.chat.id'),
+            'message_id' => TgSession::getParam('message.message_id'),
+        ]);
+
+        $request['setBan'] = true;
+        return $request;
+    }
+
+    private function ban($request)
+    {
+        $users = TgSession::getChat()->users;
+        foreach($users as $user){
+            if($user->user_id != TgSession::getUser()->tg_id){
+                continue;
+            }
+            if($user->ban == 0){
+                return $request;
+            }
+            $admins = [];
+            $adminsChat = TgBotChatAdmin::where('chat_id', TgSession::getParam('message.chat.id'))->get();
+            foreach($adminsChat as $admin){
+                $admins[$admin->user_id] = $admin;
+            }
+            if(isset($admins[$user->user_id])){
+                return $request;
+            }
+            TgSession::getApi()->sendMessage([
+                'chat_id' => TgSession::getParam('message.chat.id'),
+                'text' => TgSession::getUser()->link() . " хочет извиниться и признает власть \xF0\x9F\x91\x91 и могущество \xF0\x9F\x91\xBF АДМИНОВ. \nРазбанить может любой админ, командой !разбан",
+            ]);
+            sleep(5);
+            TgSession::getApi()->deleteMessage([
+                'chat_id' => TgSession::getParam('message.chat.id'),
+                'message_id' => TgSession::getParam('message.message_id'),
+            ]);
+            $request['ban'] = true;
+        }
         return $request;
     }
 }
