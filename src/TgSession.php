@@ -177,7 +177,9 @@ class TgSession
         $text = self::getParam('message.text');
         $text = str_replace(['/ ', '! '], null, $text);
         $str = explode(' ', $text, 2);
-        return mb_strtolower($str[0]);
+        $comand = mb_strtolower($str[0]);
+        $comand = str_replace(self::$config->getBotNames(), null, $comand);
+        return $comand;
     }
 
     /**

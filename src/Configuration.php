@@ -28,6 +28,11 @@ class Configuration
     protected ?string $token = null;
 
     /**
+     * @var array
+     */
+    protected array $botnames = [];
+
+    /**
      * Configuration constructor.
      * @param Configuration|null $config
      */
@@ -50,6 +55,10 @@ class Configuration
         $commands = config($this->configFile . '.commands');
         if(is_array($commands)){
             $this->setCommands($commands);
+        }
+        $botnames = config($this->configFile . '.botnames');
+        if(is_array($botnames)){
+            $this->setBotNames($botnames);
         }
         return $this;
     }
@@ -89,4 +98,22 @@ class Configuration
         return $this->token;
     }
 
+    /**
+     * @param array $botnames
+     */
+    public function setBotNames(array $botnames): void
+    {
+        $this->botnames = [];
+        foreach ($botnames as $botname) {
+            $this->botnames[] = $botname;
+        }
+    }
+
+    /**
+     * @return array
+     */
+    public function getBotNames(): array
+    {
+        return $this->botnames;
+    }
 }

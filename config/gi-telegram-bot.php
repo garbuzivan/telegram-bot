@@ -19,4 +19,9 @@ return [
         \GarbuzIvan\TelegramBot\Commands\Who::class,
     ],
 
+    'botnames' => [
+        '@yanmegabot',
+        '@yansexbot',
+    ],
+
 ];
