@@ -61,16 +61,16 @@ class Rank extends AbstractCommand
             $user = TgSession::getUser();
         }
 
-        $titles=null;
+        $titles = null;
         $titlesUser = TgSession::getUser()->titles()->orderBy('created_at', 'DESC')->take(5)->get();
         foreach ($titlesUser as $title) {
-            $titles .= "\xF0\x9F\x91\x89 " . $title->title . ' - ' . $title->created_at->format('H:i d.m.Y') . "\n";
+            $titles .= "\n\xF0\x9F\x91\x89 " . $title->title . ' - ' . $title->created_at->format('d.m.Y');
         }
 
-        $renames=null;
+        $renames = null;
         $renamesUser = TgSession::getUser()->rename()->orderBy('created_at', 'DESC')->take(5)->get();
         foreach ($renamesUser as $rename) {
-            $renames .= "\xF0\x9F\x91\x89 " . $rename->name . ' - ' . $rename->created_at->format('H:i d.m.Y') . "\n";
+            $renames .= "\n\xF0\x9F\x91\x89 " . $rename->name . ' - ' . $rename->created_at->format('d.m.Y');
         }
 
         $text = "<b>Имя:</b> " . $user->link();
@@ -510,6 +510,7 @@ class Rank extends AbstractCommand
         if (
             isset($request['title'])
             || !in_array(TgSession::getCall(), ['/title', '!звание'])
+            || TgSession::getChat()->chat_id > 0
         ) {
             return $request;
         }
@@ -534,13 +535,13 @@ class Rank extends AbstractCommand
         $userRand = $users[array_rand($users)];
 
         TgBotUserTitle::create([
-            'user_id' => TgSession::getUser()->id,
+            'user_id' => TgSession::getUser()->tg_id,
             'title' => TgSession::getCallParam(),
         ]);
 
         TgSession::getApi()->sendMessage([
             'chat_id' => TgSession::getParam('message.chat.id'),
-            'text' => "\xE2\x9C\x85 " . $userRand->link() . " присвоено звание " . TgSession::getCallParam() . "!",
+            'text' => "\xE2\x9C\x85 " . $userRand->info->link() . " присвоено звание " . TgSession::getCallParam() . "!",
         ]);
 
         TgSession::getApi()->deleteMessage([
