@@ -61,11 +61,16 @@ class TgBotUser extends Model
 
     public function chats()
     {
-        return TgBotChatUsers::where('user_id', $this->tg_id)->get();
+        return $this->hasMany('\GarbuzIvan\TelegramBot\Models\TgBotChatUsers', 'tg_id', 'user_id');
+    }
+
+    public function rename()
+    {
+        return $this->hasMany('\GarbuzIvan\TelegramBot\Models\TgBotUserRename', 'tg_id', 'user_id');
     }
 
     public function titles()
     {
-        return TgBotUserTitle::where('user_id', $this->tg_id)->get();
+        return $this->hasMany('\GarbuzIvan\TelegramBot\Models\TgBotUserTitle', 'tg_id', 'user_id');
     }
 }

@@ -86,6 +86,13 @@ class CreateTelegramBotTable extends Migration
             $table->string('title');
             $table->timestamps();
         });
+
+        Schema::create('gi_tb_user_rename', function (Blueprint $table) {
+            $table->id();
+            $table->bigInteger('user_id')->references('tg_id')->on('gi_tb_user');;
+            $table->string('name');
+            $table->timestamps();
+        });
     }
 
     /**
