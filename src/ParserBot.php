@@ -148,7 +148,7 @@ class ParserBot
             return false;
         }
         $chats = [];
-        $chatsDB = TgSession::getUser()->chats();
+        $chatsDB = TgSession::getUser()->chats;
         foreach ($chatsDB as $chat) {
             $chats[$chat->chat_id] = $chat;
         }
