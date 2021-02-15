@@ -175,6 +175,9 @@ class TgSession
     public static function getCall(): ?string
     {
         $text = self::aliasComand();
+        if(is_null($text)){
+            return null;
+        }
         $str = explode(' ', $text, 2);
         $comand = mb_strtolower($str[0]);
         $comand = str_replace(self::$config->getBotNames(), null, $comand);
@@ -187,6 +190,9 @@ class TgSession
     public static function getCallParam(): ?string
     {
         $text = self::aliasComand();
+        if(is_null($text)){
+            return null;
+        }
         $str = explode(' ', $text, 2);
         return $str[1] ?? null;
     }
