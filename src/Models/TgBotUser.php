@@ -56,22 +56,22 @@ class TgBotUser extends Model
 
     public function timer()
     {
-        return $this->belongsTo('\GarbuzIvan\TelegramBot\Models\TgBotTimer', 'tg_id', 'user_id');
+        return $this->hasMany('\GarbuzIvan\TelegramBot\Models\TgBotTimer', 'user_id', 'tg_id');
     }
 
     public function chats()
     {
-        return $this->hasMany('\GarbuzIvan\TelegramBot\Models\TgBotChatUsers', 'tg_id', 'user_id');
+        return $this->hasMany('\GarbuzIvan\TelegramBot\Models\TgBotChatUsers', 'user_id', 'tg_id');
     }
 
     public function rename()
     {
-        return $this->hasMany('\GarbuzIvan\TelegramBot\Models\TgBotUserRename', 'tg_id', 'user_id');
+        return $this->hasMany('\GarbuzIvan\TelegramBot\Models\TgBotUserRename', 'user_id', 'tg_id');
     }
 
     public function titles()
     {
-        return $this->hasMany('\GarbuzIvan\TelegramBot\Models\TgBotUserTitle', 'tg_id', 'user_id');
+        return $this->hasMany('\GarbuzIvan\TelegramBot\Models\TgBotUserTitle', 'user_id', 'tg_id');
     }
 
     public function getTimer(TgBotUser $user, string $param, string $strtotime = '-6 hours'): bool

@@ -62,13 +62,13 @@ class Rank extends AbstractCommand
         }
 
         $titles=null;
-        $titlesUser = TgSession::getUser()->titles->orderBy('created_at', 'DESC')->take(5)->get();
+        $titlesUser = TgSession::getUser()->titles()->orderBy('created_at', 'DESC')->take(5)->get();
         foreach ($titlesUser as $title) {
             $titles .= "\xF0\x9F\x91\x89 " . $title->title . ' - ' . $title->created_at->format('H:i d.m.Y') . "\n";
         }
 
         $renames=null;
-        $renamesUser = TgSession::getUser()->rename->orderBy('created_at', 'DESC')->take(5)->get();
+        $renamesUser = TgSession::getUser()->rename()->orderBy('created_at', 'DESC')->take(5)->get();
         foreach ($renamesUser as $rename) {
             $renames .= "\xF0\x9F\x91\x89 " . $rename->name . ' - ' . $rename->created_at->format('H:i d.m.Y') . "\n";
         }
