@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace GarbuzIvan\TelegramBot\Commands;
 
 use Closure;
+use GarbuzIvan\TelegramBot\Models\TgBotChatUsers;
 use GarbuzIvan\TelegramBot\Models\TgBotUser;
 use GarbuzIvan\TelegramBot\TgSession;
+use Illuminate\Support\Facades\DB;
 use Telegram\Bot\Exceptions\TelegramSDKException;
 
 class Rank extends AbstractCommand
@@ -31,6 +33,9 @@ class Rank extends AbstractCommand
         $request = $this->setPenis($request);
         $request = $this->setBoobs($request);
         $request = $this->setVagina($request);
+        $request = $this->active($request);
+        $request = $this->like($request);
+        $request = $this->dislike($request);
         return $next($request);
     }
 
@@ -258,6 +263,95 @@ class Rank extends AbstractCommand
         ]);
 
         $request['setVagina'] = true;
+        return $request;
+    }
+
+    private function like($request)
+    {
+        if (isset($request['like']) || is_null(TgSession::getUserReply())) {
+            return $request;
+        }
+        $text = TgSession::getParam('message.text');
+        if (
+            preg_match("~(\u{1F60D}|\u{2764}|\u{1F381}|\u{1F37B}|\u{1F37A}|\u{1F382}|\u{1F444}|\u{1F445}|\u{1F48B}|\u{1F48C}|\u{1F48F}|\u{1F493}|\u{1F494}|\u{1F495}|\u{1F496}|\u{1F497}|\u{1F498}|\u{1F499}|\u{1F49A}|\u{1F49B}|\u{1F49C}|\u{1F49D}|\u{1F49E}|\u{1F49F})~u", $text)
+            || preg_match("~\u{1F44D}~u", $text)
+            || trim($text) == '+'
+        ) {
+            TgBotUser::where('tg_id', TgSession::getUserReply()->tg_id)->update([
+                'like' => DB::raw('`like`+1')
+            ]);
+            $m = TgSession::getApi()->sendMessage([
+                'chat_id' => TgSession::getParam('message.chat.id'),
+                'text' => TgSession::getUser()->link() . " \xF0\x9F\x91\x8D повысил(а) рейтинг  " . TgSession::getUserReply()->link() . "!",
+            ]);
+            sleep(3);
+            TgSession::getApi()->deleteMessage([
+                'chat_id' => TgSession::getParam('message.chat.id'),
+                'message_id' => $m['message_id'],
+            ]);
+            $request['like'] = true;
+        }
+        return $request;
+    }
+
+    private function dislike($request)
+    {
+        if (isset($request['dislike']) || is_null(TgSession::getUserReply())) {
+            return $request;
+        }
+        $text = TgSession::getParam('message.text');
+        if (
+            preg_match("~\u{1F44E}~u", $text)
+            || trim($text) == '-'
+        ) {
+            TgBotUser::where('tg_id', TgSession::getUserReply()->tg_id)->update([
+                'dislike' => DB::raw('`dislike`+1')
+            ]);
+            $m = TgSession::getApi()->sendMessage([
+                'chat_id' => TgSession::getParam('message.chat.id'),
+                'text' => TgSession::getUser()->link() . " \xF0\x9F\x91\x8E понизил(а) рейтинг  " . TgSession::getUserReply()->link() . "!",
+            ]);
+            sleep(3);
+            TgSession::getApi()->deleteMessage([
+                'chat_id' => TgSession::getParam('message.chat.id'),
+                'message_id' => $m['message_id'],
+            ]);
+            $request['dislike'] = true;
+        }
+        return $request;
+    }
+
+    private function active($request)
+    {
+        $activeList = [
+            '/chatactive' => 1,
+            '/chatdeactive' => 0,
+            '!играю' => 1,
+            '!неиграю' => 0,
+            'играю' => 1,
+            'неиграю' => 0,
+        ];
+        if (isset($request['setSex']) || !in_array(TgSession::getCall(), array_keys($activeList))) {
+            return $request;
+        }
+
+        $active = $activeList[TgSession::getCall()];
+        TgBotChatUsers::where('user_id', TgSession::getUser()->id)
+            ->where('chat_id', TgSession::getParam('message.chat.id'))
+            ->update(['active' => $active]);
+
+        TgSession::getApi()->sendMessage([
+            'chat_id' => TgSession::getParam('message.chat.id'),
+            'text' => "\xF0\x9F\x90\x92 " . TgSession::getUser()->link() .
+                ' приказал боту <b>' . ($active == 0 ? 'не звать' : 'звать') . " через зазывалу!</b> \xF0\x9F\x98\x9C!",
+        ]);
+
+        TgSession::getApi()->deleteMessage([
+            'chat_id' => TgSession::getParam('message.chat.id'),
+            'message_id' => TgSession::getParam('message.message_id'),
+        ]);
+
+        $request['active'] = true;
         return $request;
     }
 }
