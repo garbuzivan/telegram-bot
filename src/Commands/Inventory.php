@@ -24,7 +24,7 @@ class Inventory extends AbstractCommand
      */
     public function handler($request, Closure $next)
     {
-        if (isset($request['All']) || !in_array(TgSession::getCall(), [$this->name])) {
+        if (isset($request['inventory']) || !in_array(TgSession::getCall(), [$this->name, '!инвентарь', 'инвентарь', '!предметы', 'предметы'])) {
             return $next($request);
         }
 
@@ -33,9 +33,19 @@ class Inventory extends AbstractCommand
             $user = TgSession::getUser();
         }
 
+        $inventory = null;
+        foreach ($user->inventory as $item) {
+            $inventory .= "\n\xE2\x9C\x94 " . $item->name;
+        }
+
         TgSession::getApi()->sendMessage([
             'chat_id' => TgSession::getParam('message.chat.id'),
-            'text' => $user->link() . ': ' . $this->name . "\n" . TgSession::getCallParam(),
+            'text' => 'Имущество ' . $user->link() . ":" . (is_null($inventory) ? "\n<b>Ничего нет</b>" : $inventory),
+        ]);
+
+        TgSession::getApi()->deleteMessage([
+            'chat_id' => TgSession::getParam('message.chat.id'),
+            'message_id' => TgSession::getParam('message.message_id'),
         ]);
 
         $request['Rank'] = true;

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace GarbuzIvan\TelegramBot\Commands;
 
 use Closure;
+use GarbuzIvan\TelegramBot\Models\TgBotUser;
 use GarbuzIvan\TelegramBot\TgSession;
 
 class Bonus extends AbstractCommand
@@ -24,21 +25,142 @@ class Bonus extends AbstractCommand
      */
     public function handler($request, Closure $next)
     {
-        if (isset($request['All']) || !in_array(TgSession::getCall(), [$this->name])) {
-            return $next($request);
+        $request = $this->bonus($request);
+        $request = $this->view($request);
+        return $next($request);
+    }
+
+    private function view($request)
+    {
+        if (isset($request['shop']) || !in_array(TgSession::getCall(), ['/bonus', '!бонус', 'бонус'])) {
+            return $request;
         }
 
-        $user = TgSession::getUserReply();
-        if (is_null($user)) {
-            $user = TgSession::getUser();
+        $randMax = rand(3000, 15000);
+        $itemInfo = ':' . TgSession::getUser()->tg_id . ':' . $randMax;
+        $bombs = collect(range(1, 25))->random(14)->toArray();
+
+        $inline_keyboard = [];
+        $lineCount = 0;
+        $line = [];
+        for ($i = 1; $i <= 25; $i++) {
+            $lineCount++;
+            $line[] = ['text' => "\xF0\x9F\x8E\x81", 'callback_data' => 'bonus:' . $i . ':' .
+                (in_array($i, $bombs) ? 1 : 0) . ':0:3' . $itemInfo];
+            if ($lineCount == 5) {
+                $inline_keyboard[] = $line;
+                $line = [];
+                $lineCount = 0;
+            }
         }
 
+        $keyboard = array("inline_keyboard" => $inline_keyboard);
+        $reply_markup = json_encode($keyboard);
         TgSession::getApi()->sendMessage([
             'chat_id' => TgSession::getParam('message.chat.id'),
-            'text' => $user->link() . ': ' . $this->name . "\n" . TgSession::getCallParam(),
+            'text' => TgSession::getUser()->link() . " ты можешь получить бесплатный денежный бонус на свой счет до " .
+                $randMax . " \xF0\x9F\x92\xB0 .\n" .
+                "Собери три \xF0\x9F\x8E\x81 и найди \xF0\x9F\x92\xB8 или \xF0\x9F\x92\xA9!",
+            'reply_markup' => $reply_markup,
         ]);
 
-        $request['Rank'] = true;
-        return $next($request);
+        $request['shop'] = true;
+        return $request;
+    }
+
+    private function bonus($request)
+    {
+        if (is_null(TgSession::getParam('callback_query.data'))) {
+            return $request;
+        }
+        $param = TgSession::getParam('callback_query.data');
+        $param = explode(':', $param);
+        if (!isset($param[5]) || $param[0] != 'bonus') {
+            return $request;
+        }
+        if ($param[5] != TgSession::getParam('callback_query.from.id')) {
+            $this->callbackMessage('Не раззивай роток на чужой бонус!');
+            return $request;
+        }
+        if ($param[3] == 1) {
+            $this->callbackMessage('Вы уже открывали эту ячейку');
+            return $request;
+        }
+        if ($param[4] == 0) {
+            TgSession::getApi()->deleteMessage([
+                'chat_id' => TgSession::getParam('callback_query.message.chat.id'),
+                'message_id' => TgSession::getParam('callback_query.message.message_id'),
+            ]);
+            return $request;
+        }
+        if($param[4] == 1 || $param[2] == 1){
+            $user = TgBotUser::where('tg_id', $param[5])->first();
+            $balansAdd = intval($param[6]/$param[2]);
+            TgBotUser::where('tg_id', $param[5])->update(['money' => $user->money + $balansAdd]);
+
+            TgSession::getApi()->sendMessage([
+                'chat_id' => TgSession::getParam('callback_query.message.chat.id'),
+                'text' => $user->link() . " получил за бонус " .
+                    number_format($balansAdd, 0, '', ' ') .
+                    " \xF0\x9F\x92\xB5",
+            ]);
+            $this->update($param);
+            sleep(5);
+
+            TgSession::getApi()->deleteMessage([
+                'chat_id' => TgSession::getParam('callback_query.message.chat.id'),
+                'message_id' => TgSession::getParam('callback_query.message.message_id'),
+            ]);
+            return $request;
+        }
+        $this->update($param);
+        return $request;
+    }
+
+    /**
+     * @param string $text
+     * @return bool
+     * @throws \Telegram\Bot\Exceptions\TelegramSDKException
+     */
+    private function callbackMessage(string $text)
+    {
+        return TgSession::getApi()->answerCallbackQuery([
+            'callback_query_id' => TgSession::getParam('callback_query.id'),
+            'text' => $text,
+        ]);
+    }
+
+    /**
+     * @param array $param
+     */
+    private function update(array $param)
+    {
+        $clickItem = TgSession::getParam('callback_query.data');
+        $inline_keyboard = TgSession::getParam('callback_query.message.reply_markup.inline_keyboard');
+        foreach ($inline_keyboard as $lineKey => $line) {
+            foreach ($line as $itemKey => $item) {
+                if ($item['callback_data'] == $clickItem) {
+                    $inline_keyboard[$lineKey][$itemKey] = $item;
+                    if ($param[2] == 1) {
+                        $inline_keyboard[$lineKey][$itemKey]['text'] = "\xF0\x9F\x92\xA9";
+                    } else {
+                        $inline_keyboard[$lineKey][$itemKey]['text'] = "\xF0\x9F\x92\xB8";
+                    }
+                    $param[3] = 1;
+                    $inline_keyboard[$lineKey][$itemKey]['callback_data'] = implode(':', $param);
+                } else {
+                    $data = explode(':', $item['callback_data']);
+                    $data[4]--;
+                    $inline_keyboard[$lineKey][$itemKey]['callback_data'] = implode(':', $data);
+                }
+            }
+        }
+        $keyboard = array("inline_keyboard" => $inline_keyboard);
+        $reply_markup = json_encode($keyboard);
+        TgSession::getApi()->editMessageReplyMarkup([
+            'chat_id' => TgSession::getParam('callback_query.message.chat.id'),
+            'message_id' => TgSession::getParam('callback_query.message.message_id'),
+            'reply_markup' => $reply_markup,
+        ]);
     }
 }

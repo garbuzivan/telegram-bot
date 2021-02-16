@@ -6,6 +6,7 @@ namespace GarbuzIvan\TelegramBot\Commands;
 
 use Closure;
 use GarbuzIvan\TelegramBot\Dict;
+use GarbuzIvan\TelegramBot\Models\TgBotUserInventory;
 use GarbuzIvan\TelegramBot\TgSession;
 
 class Shop extends AbstractCommand
@@ -85,10 +86,18 @@ class Shop extends AbstractCommand
         if (!isset($param[1]) || $param[0] != 'shop') {
             return $request;
         }
-        file_put_contents('tttttttttttttt.php', json_encode(TgSession::getParam('callback_query')) . "\n\n", FILE_APPEND);
+        $shopItems = Dict::getShop();
+        if(!isset($shopItems[$param[1]])){
+            return $request;
+        }
+        TgBotUserInventory::create([
+            'user_id' => TgSession::getParam('callback_query.from.id'),
+            'inventory_id' => $param[1],
+            'name' => $shopItems[$param[1]]['text'],
+        ]);
         TgSession::getApi()->answerCallbackQuery([
             'callback_query_id' => TgSession::getParam('callback_query.id'),
-            'text' => TgSession::getParam('callback_query.data'),
+            'text' => $shopItems[$param[1]]['title'],
         ]);
         return $request;
     }
