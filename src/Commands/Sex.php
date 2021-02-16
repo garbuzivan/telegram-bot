@@ -6,6 +6,8 @@ namespace GarbuzIvan\TelegramBot\Commands;
 
 use Closure;
 use GarbuzIvan\TelegramBot\Dict;
+use GarbuzIvan\TelegramBot\Models\TgBotUser;
+use GarbuzIvan\TelegramBot\Models\TgBotUserInventory;
 use GarbuzIvan\TelegramBot\TgSession;
 use Telegram\Bot\FileUpload\InputFile;
 
@@ -960,7 +962,78 @@ class Sex extends AbstractCommand
      */
     private function surprise($request)
     {
-        return $request;
+        return $this->defCommand(
+            'slave',
+            ['/surprise', '!сюрприз', 'сюрприз'],
+            [
+                'дарит крем от целлюлита',
+                'дарит вибратор',
+                'дарит тетрис',
+                'дарит пачку тампонов для',
+                'дарит баночку мочи',
+                'дарит коробок кала',
+                'дарит козюлю из носа',
+                'дарит книгу "Техника глубокого минета"',
+                'дарит парик',
+                'дарит чупа-чупс',
+                'дарит бомжа',
+                'дарит резиновую женщину',
+                'дарит шоколадный пенис',
+                'дарит хламидии',
+                'дарит крошку хлеба',
+                'дарит анальную пробку',
+                'дарит бычки сигарет',
+                'дарит две гвоздики',
+                'дарит кастет',
+                'дарит меховые наручники',
+                'дарит розу',
+                'дарит дошик',
+                'дарит бутылку водки',
+                'дарит туалетную бумагу',
+                'дарит стриптиз',
+                'сказал(а) что беременна(ый)',
+                'дарит свисток',
+                'дарит могильную плиту',
+                'дарит мячик',
+                'дарит проститутку на час',
+                'подложил(а) какашку под дверь',
+                'поцеловал(а) в щечку',
+                'подарил(а) щенка',
+                'подарил(а) котенка',
+                'подарил(а) телевизор',
+                'предложил(а) руку и сердце',
+                'засунул(а) пальчик в попу',
+                'подарил(а) мягкого медвежонка',
+                'подарил(а) гоночную машинку на радиуправлении',
+                'подарил(а) кубик рубика',
+                'подарил(а) скакалку',
+                'подарил(а) стринги',
+                'подарил(а) лифчик',
+                'подарил(а) семейные трусы',
+                'подарил(а) дилдо',
+                'подарил(а) мыло и веревку',
+                'подарил(а) набор для ролевой игры в стюардессу и пассажира',
+                'подарил(а) набор для ролевой игры в медсестру и больного',
+                'подарил(а) набор для ролевой игры в сантехника и беспомощную девушку',
+                'подарил(а) набор алкаша',
+                'подарил(а) шапку ушанку',
+                'подарил(а) набор разноцвестных презервативов',
+                'подарил(а) раскраску',
+                'подарил(а) журнал опытного анониста',
+                'предложил(а) переспать без обязательств',
+                'хочет познакомится с родителями',
+                'предложил(а) секс втроем',
+                'подарил(а) путевку на отдых в Крым',
+                'подарил(а) путевку на отдых в Сочи',
+                'подарил(а) путевку на отдых в Египет',
+                'подарил(а) путевку на отдых в горы',
+                'угостил(а) тортиком',
+                'затянул(а) в душ',
+                'подарил(а) почку',
+            ],
+            $request,
+            '%user% %arr% %userreply%'
+        );
     }
 
     /**
@@ -969,6 +1042,50 @@ class Sex extends AbstractCommand
      */
     private function undress($request)
     {
+        if (
+            isset($request['undress'])
+            || !in_array(TgSession::getCall(), ['!снять', 'снять', '!раздеть', 'раздеть', '!ограбить', '!ограбить'])
+            || is_null(TgSession::getUserReply())
+        ) {
+            return $request;
+        }
+
+        if(TgSession::getUserReply()->inventory->whereNotIn('inventory_id', [21,22])->count() == 0){
+            TgSession::getApi()->sendMessage([
+                'chat_id' => TgSession::getParam('message.chat.id'),
+                'text' => TgSession::getUserReply()->link() .
+                    ' ничего не имеет, чтоб раздеть или отобрать! Можно получить в подарок или купить в магазине!',
+            ]);
+        }
+
+        if(TgSession::getUser()->money < 100){
+            $m = TgSession::getApi()->sendMessage([
+                'chat_id' => TgSession::getParam('message.chat.id'),
+                'text' => TgSession::getUser()->link() . ' бомж и не может ничего снять или ограбить!',
+            ]);
+            sleep(5);
+            TgSession::getApi()->deleteMessage([
+                'chat_id' => TgSession::getParam('message.chat.id'),
+                'message_id' => $m['message_id'],
+            ]);
+            return $request;
+        }
+
+        $item = collect(TgSession::getUserReply()->inventory)->whereNotIn('inventory_id', [21,22])->random();
+        $shopItems = Dict::getShop();
+
+        TgSession::getApi()->sendMessage([
+            'chat_id' => TgSession::getParam('message.chat.id'),
+            'text' => TgSession::getUser()->link() . ' снял(а) c ' . TgSession::getUserReply()->link() . ' ' .
+                $shopItems[$item->inventory_id]['text'] . " за 100 \xF0\x9F\x92\xB8",
+        ]);
+        TgBotUser::where('tg_id', TgSession::getUser()->tg_id)->update(['money' => TgSession::getUser()->money - 100]);
+        TgBotUserInventory::where('user_id', TgSession::getUserReply()->tg_id)
+            ->where('inventory_id', $item->inventory_id)
+            ->delete();
+
+        $this->delMessage();
+        $request['undress'] = true;
         return $request;
     }
 
