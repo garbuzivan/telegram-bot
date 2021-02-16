@@ -492,15 +492,6 @@ class Sex extends AbstractCommand
      * @param $request
      * @return mixed
      */
-    private function surprise($request)
-    {
-        return $request;
-    }
-
-    /**
-     * @param $request
-     * @return mixed
-     */
     private function console($request)
     {
         return $this->defCommand(
@@ -674,15 +665,6 @@ class Sex extends AbstractCommand
      * @param $request
      * @return mixed
      */
-    private function undress($request)
-    {
-        return $request;
-    }
-
-    /**
-     * @param $request
-     * @return mixed
-     */
     private function execute($request)
     {
         return $this->defCommand(
@@ -713,15 +695,6 @@ class Sex extends AbstractCommand
             $request,
             '%user% %arr% %userreply%'
         );
-    }
-
-    /**
-     * @param $request
-     * @return mixed
-     */
-    private function couple($request)
-    {
-        return $request;
     }
 
     /**
@@ -771,33 +744,6 @@ class Sex extends AbstractCommand
             ],
             $request
         );
-    }
-
-    /**
-     * @param $request
-     * @return mixed
-     */
-    private function shved($request)
-    {
-        return $request;
-    }
-
-    /**
-     * @param $request
-     * @return mixed
-     */
-    private function sexM1W2($request)
-    {
-        return $request;
-    }
-
-    /**
-     * @param $request
-     * @return mixed
-     */
-    private function sexM2W1($request)
-    {
-        return $request;
     }
 
     /**
@@ -967,7 +913,7 @@ class Sex extends AbstractCommand
 
         $com = $arr[0] . ' и ' . $arr[1];
         $text = $user . ' ' . str_replace(['%girl%', '%arr%'], [$girl, $com], $why[0]) . " \xF0\x9F\x8C\xBA !";
-        $listCompliment = [$text;
+        $listCompliment = [$text];
 
         return $this->defCommand(
             'compliment',
@@ -992,6 +938,60 @@ class Sex extends AbstractCommand
             $request,
             '%user% %arr% %userreply%'
         );
+    }
+
+    /**
+     * @param $request
+     * @return mixed
+     */
+    private function surprise($request)
+    {
+        return $request;
+    }
+
+    /**
+     * @param $request
+     * @return mixed
+     */
+    private function undress($request)
+    {
+        return $request;
+    }
+
+    /**
+     * @param $request
+     * @return mixed
+     */
+    private function couple($request)
+    {
+        return $request;
+    }
+
+    /**
+     * @param $request
+     * @return mixed
+     */
+    private function shved($request)
+    {
+        return $request;
+    }
+
+    /**
+     * @param $request
+     * @return mixed
+     */
+    private function sexM1W2($request)
+    {
+        return $request;
+    }
+
+    /**
+     * @param $request
+     * @return mixed
+     */
+    private function sexM2W1($request)
+    {
+        return $request;
     }
 
     private function defCommand($name, $commands, $arr, $request, $template = '%user% %arr% %userreply% %where%')
