@@ -73,4 +73,9 @@ class TgBotUser extends Model
     {
         return $this->hasMany('\GarbuzIvan\TelegramBot\Models\TgBotUserTitle', 'user_id', 'tg_id');
     }
+
+    public function inventory()
+    {
+        return $this->hasMany('\GarbuzIvan\TelegramBot\Models\TgBotUserInventory', 'user_id', 'tg_id');
+    }
 }
