@@ -6,6 +6,35 @@ namespace GarbuzIvan\TelegramBot;
 
 class Dict
 {
+    public static function getWherePeople(): array
+    {
+        return [
+            'щеку',
+            'шую',
+            'нос',
+            'губы',
+            'лоб',
+            'плечо',
+            'локоть',
+            'кисть',
+            'руку',
+            'ногу',
+            'палец',
+            'писюн',
+            'член',
+            'влагалище',
+            'попу',
+            'жопу',
+            'булку',
+            'мизинец',
+            'лодошку',
+            'пятку',
+            'провь',
+            'зубы',
+            'подбородок',
+        ];
+    }
+
     public static function getWhere(): array
     {
         return [

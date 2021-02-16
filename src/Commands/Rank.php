@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace GarbuzIvan\TelegramBot\Commands;
 
-use Carbon\Carbon;
 use Closure;
 use GarbuzIvan\TelegramBot\Models\TgBotChatAdmin;
 use GarbuzIvan\TelegramBot\Models\TgBotChatUsers;
@@ -63,13 +62,13 @@ class Rank extends AbstractCommand
         }
 
         $titles = null;
-        $titlesUser = TgSession::getUser()->titles()->orderBy('created_at', 'DESC')->take(5)->get();
+        $titlesUser = $user->titles()->orderBy('created_at', 'DESC')->take(5)->get();
         foreach ($titlesUser as $title) {
             $titles .= "\n\xF0\x9F\x91\x89 " . $title->title . ' - ' . $title->created_at->format('d.m.Y');
         }
 
         $renames = null;
-        $renamesUser = TgSession::getUser()->rename()->orderBy('created_at', 'DESC')->take(5)->get();
+        $renamesUser = $user->rename()->orderBy('created_at', 'DESC')->take(5)->get();
         foreach ($renamesUser as $rename) {
             $renames .= "\n\xF0\x9F\x91\x89 " . $rename->name . ' - ' . $rename->created_at->format('d.m.Y');
         }
