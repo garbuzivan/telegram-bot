@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace GarbuzIvan\TelegramBot\Commands;
 
+use Carbon\Carbon;
 use Closure;
+use GarbuzIvan\TelegramBot\Models\TgBotTimer;
 use GarbuzIvan\TelegramBot\Models\TgBotUser;
 use GarbuzIvan\TelegramBot\TgSession;
 
@@ -32,9 +34,24 @@ class Bonus extends AbstractCommand
 
     private function view($request)
     {
-        if (isset($request['shop']) || !in_array(TgSession::getCall(), ['/bonus', '!бонус', 'бонус'])) {
+        if (is_null(TgSession::getUser()) || isset($request['shop']) || !in_array(TgSession::getCall(), ['/bonus', '!бонус', 'бонус'])) {
             return $request;
         }
+
+        $timerUser = TgBotTimer::where('user_id', TgSession::getUser()->tg_id)
+            ->where('param', 'bonus')
+            ->where('created_at', '>', Carbon::now()->subHours(6))
+            ->first();
+
+        if (!is_null($timerUser)) {
+            TgSession::getApi()->sendMessage([
+                'chat_id' => TgSession::getParam('message.chat.id'),
+                'text' => "Бонус можно получить не чаще чем раз в 6 часов.\nВы получили в " .
+                    $timerUser->created_at->format('H:i:s'),
+            ]);
+            return $request;
+        }
+        TgBotTimer::where('user_id', TgSession::getUser()->tg_id)->where('param', 'bonus')->delete();
 
         $randMax = rand(3000, 15000);
         $itemInfo = ':' . TgSession::getUser()->tg_id . ':' . $randMax;
@@ -97,6 +114,12 @@ class Bonus extends AbstractCommand
             $user = TgBotUser::where('tg_id', $param[5])->first();
             $balansAdd = intval($param[6]/$param[2]);
             TgBotUser::where('tg_id', $param[5])->update(['money' => $user->money + $balansAdd]);
+
+            TgBotTimer::create([
+                'user_id' => $param[5],
+                'chat_id' => TgSession::getParam('callback_query.message.chat.id'),
+                'param' => 'bonus',
+            ]);
 
             TgSession::getApi()->sendMessage([
                 'chat_id' => TgSession::getParam('callback_query.message.chat.id'),

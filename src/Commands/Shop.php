@@ -87,7 +87,7 @@ class Shop extends AbstractCommand
             return $request;
         }
         $shopItems = Dict::getShop();
-        if(!isset($shopItems[$param[1]])){
+        if (!isset($shopItems[$param[1]])) {
             return $request;
         }
         TgBotUserInventory::create([
