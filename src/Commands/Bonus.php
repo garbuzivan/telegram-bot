@@ -9,6 +9,8 @@ use Closure;
 use GarbuzIvan\TelegramBot\Models\TgBotTimer;
 use GarbuzIvan\TelegramBot\Models\TgBotUser;
 use GarbuzIvan\TelegramBot\TgSession;
+use Telegram\Bot\Exceptions\TelegramResponseException;
+use Telegram\Bot\Exceptions\TelegramSDKException;
 
 class Bonus extends AbstractCommand
 {
@@ -110,9 +112,9 @@ class Bonus extends AbstractCommand
             ]);
             return $request;
         }
-        if($param[4] == 1 || $param[2] == 1){
+        if ($param[4] == 1 || $param[2] == 1) {
             $user = TgBotUser::where('tg_id', $param[5])->first();
-            $balansAdd = intval($param[6]/$param[2]);
+            $balansAdd = intval($param[6] / $param[2]);
             TgBotUser::where('tg_id', $param[5])->update(['money' => $user->money + $balansAdd]);
 
             TgBotTimer::create([
@@ -180,10 +182,14 @@ class Bonus extends AbstractCommand
         }
         $keyboard = array("inline_keyboard" => $inline_keyboard);
         $reply_markup = json_encode($keyboard);
-        TgSession::getApi()->editMessageReplyMarkup([
-            'chat_id' => TgSession::getParam('callback_query.message.chat.id'),
-            'message_id' => TgSession::getParam('callback_query.message.message_id'),
-            'reply_markup' => $reply_markup,
-        ]);
+        try {
+            TgSession::getApi()->editMessageReplyMarkup([
+                'chat_id' => TgSession::getParam('callback_query.message.chat.id'),
+                'message_id' => TgSession::getParam('callback_query.message.message_id'),
+                'reply_markup' => $reply_markup,
+            ]);
+        } catch (TelegramResponseException|TelegramSDKException $e) {
+            exit();
+        }
     }
 }
