@@ -160,9 +160,16 @@ class Sex extends AbstractCommand
      */
     private function kiss($request)
     {
-        $arr = Dict::rand(Dict::getWherePeople());
-        foreach($arr as $key=>$value){
-            $arr[$arr] = 'целует в' . $value;
+        if (
+            isset($request['compliment'])
+            || !in_array(TgSession::getCall(), ['/kiss', '!поцеловать', 'поцеловать', '!поцелуй', 'поцелуй'])
+        ) {
+            return $request;
+        }
+
+        $arr = Dict::getWherePeople();
+        foreach ($arr as $key => $value) {
+            $arr[$key] = 'целует в' . $value;
         }
         $arr = array_merge([
             'целует пуская слюни',
@@ -752,6 +759,13 @@ class Sex extends AbstractCommand
      */
     private function compliment($request)
     {
+        if (
+            isset($request['compliment'])
+            || !in_array(TgSession::getCall(), ['/compliment', '!комплимент', 'комплимент'])
+        ) {
+            return $request;
+        }
+
         $why = [
             'прошептал на ушко, что %girl% %arr%',
             'отправил цветы и открытку в которой написано, что %girl% %arr%',
@@ -933,7 +947,7 @@ class Sex extends AbstractCommand
             'bite',
             ['/bite', '!укусить', 'укусить'],
             [
-                ' за ' . Dict::rand(Dict::getWherePeople()),
+                ' кусает за ' . Dict::rand(Dict::getWherePeople()),
             ],
             $request,
             '%user% %arr% %userreply%'
@@ -964,6 +978,48 @@ class Sex extends AbstractCommand
      */
     private function couple($request)
     {
+        if (
+            isset($request['couple'])
+            || !in_array(TgSession::getCall(), ['/couple', '!пара', 'пара'])
+            || TgSession::getChat()->users->count() < 2
+        ) {
+            return $request;
+        }
+
+        $users = TgSession::getChat()->users->random(2);
+        $arr = [
+            'сегодня воруют сумки у старух',
+            'трахали пьяного бомжа',
+            'обоссали лифт',
+            'нажрались слабительного',
+            'провели ночь с геями',
+            'продавали наркотики',
+            'проиграли все в казино',
+            'бегали голышом под дождем',
+            'напились самогона',
+            'провели ночь с лесбиянками',
+            'попробовали дилдо 50 сантиметров',
+            'играли в дурака на раздевание',
+            'лизали ободок унитаза',
+            'украли использованную туалетную бумагу',
+            'плавали в луже',
+            'намазали пах друг друга жгучим перцем',
+            'нюхали носки в обувном магазине',
+            'мылись на пляже с мылом',
+            'мылись в бассейне с гелем для душа',
+            'работали попрошайками на трассе',
+            'предлагали интимные услуги за еду',
+            'предлагали интимные услуги за деньги',
+            'жрали мыло',
+            'собирали собачьи какашки по улице',
+        ];
+        TgSession::getApi()->sendMessage([
+            'chat_id' => TgSession::getParam('message.chat.id'),
+            'text' => $users->first()->info->link() . ' и ' . $users->last()->info->link() . ' ' . $arr[array_rand($arr)] .
+                "\n\xF0\x9F\x92\xA3 \xF0\x9F\x91\xAF \xF0\x9F\x91\xA3 \xF0\x9F\x8E\x8E \xF0\x9F\x99\x8F \xF0\x9F\x99\x8C \xF0\x9F\x99\x88 \xF0\x9F\x98\xB9 \xF0\x9F\x98\xB1 \xF0\x9F\x98\x82",
+        ]);
+        $this->delMessage();
+        $request['couple'] = true;
         return $request;
     }
 
@@ -973,6 +1029,53 @@ class Sex extends AbstractCommand
      */
     private function shved($request)
     {
+        if (
+            isset($request['shved'])
+            || !in_array(TgSession::getCall(), ['/shved', '!швед', 'швед'])
+        ) {
+            return $request;
+        }
+
+        $users = ['b' => [], 'g' => []];
+        $collection = TgSession::getChat()->users;
+        foreach ($collection as $user) {
+            $data = [];
+            $data['user_id'] = $user->user_id;
+            $data['sex'] = $user->info->sex;
+            $data['link'] = $user->info->link();
+            if ($user->info->sex == 'парень') {
+                $users['b'][] = $data;
+            } elseif ($user->info->sex == 'девушка') {
+                $users['g'][] = $data;
+            }
+        }
+        $boys = collect($users['b']);
+        $girls = collect($users['g']);
+
+        if ($boys->count() < 2 || $girls->count() < 2) {
+            TgSession::getApi()->sendMessage([
+                'chat_id' => TgSession::getParam('message.chat.id'),
+                'text' => 'Для шведской семьи нехватает людей. Необходимо минимум 2 парня и 2 девушки в чате!',
+            ]);
+            $this->delMessage();
+            return $request;
+        }
+
+        $boys = $boys->random(2);
+        $girls = $girls->random(2);
+
+        $text = "<b>ШВЕДСКАЯ СЕМЬЯ:</b>\n";
+        $text .= " \xF0\x9F\x8C\x88 " . $boys->first()['link'] .
+            " \xF0\x9F\x92\x98 " . $girls->first()['link'] .
+            " \xF0\x9F\x8E\x82 " . $boys->last()['link'] .
+            " \xF0\x9F\x92\x95 " . $girls->last()['link'] .
+            " \xF0\x9F\x98\x98 ";
+        TgSession::getApi()->sendMessage([
+            'chat_id' => TgSession::getParam('message.chat.id'),
+            'text' => $text,
+        ]);
+        $this->delMessage();
+        $request['shved'] = true;
         return $request;
     }
 
@@ -982,6 +1085,52 @@ class Sex extends AbstractCommand
      */
     private function sexM1W2($request)
     {
+        if (
+            isset($request['sexM1W2'])
+            || !in_array(TgSession::getCall(), ['/mw2', '!жмж', 'жмж'])
+        ) {
+            return $request;
+        }
+
+        $users = ['b' => [], 'g' => []];
+        $collection = TgSession::getChat()->users;
+        foreach ($collection as $user) {
+            $data = [];
+            $data['user_id'] = $user->user_id;
+            $data['sex'] = $user->info->sex;
+            $data['link'] = $user->info->link();
+            if ($user->info->sex == 'парень') {
+                $users['b'][] = $data;
+            } elseif ($user->info->sex == 'девушка') {
+                $users['g'][] = $data;
+            }
+        }
+        $boys = collect($users['b']);
+        $girls = collect($users['g']);
+
+        if ($boys->count() < 1 || $girls->count() < 2) {
+            TgSession::getApi()->sendMessage([
+                'chat_id' => TgSession::getParam('message.chat.id'),
+                'text' => 'Для ЖМЖ нехватает людей. Необходимо минимум 1 парень и 2 девушки в чате!',
+            ]);
+            $this->delMessage();
+            return $request;
+        }
+
+        $boys = $boys->random();
+        $girls = $girls->random(2);
+
+        $text = "<b>ЖМЖ занимаются " . Dict::rand(Dict::getWhere()) . ":</b>\n";
+        $text .= "\xF0\x9F\x92\x93 " . $girls->first()['link'] .
+            " \xF0\x9F\x92\x98 " . $boys['link'] .
+            " \xF0\x9F\x92\x95 " . $girls->last()['link'] .
+            " \xF0\x9F\x98\x98 ";
+        TgSession::getApi()->sendMessage([
+            'chat_id' => TgSession::getParam('message.chat.id'),
+            'text' => $text,
+        ]);
+        $this->delMessage();
+        $request['sexM1W2'] = true;
         return $request;
     }
 
@@ -991,9 +1140,64 @@ class Sex extends AbstractCommand
      */
     private function sexM2W1($request)
     {
+        if (
+            isset($request['sexM2W1'])
+            || !in_array(TgSession::getCall(), ['/m2w', '!мжм', 'мжм'])
+        ) {
+            return $request;
+        }
+
+        $users = ['b' => [], 'g' => []];
+        $collection = TgSession::getChat()->users;
+        foreach ($collection as $user) {
+            $data = [];
+            $data['user_id'] = $user->user_id;
+            $data['sex'] = $user->info->sex;
+            $data['link'] = $user->info->link();
+            if ($user->info->sex == 'парень') {
+                $users['b'][] = $data;
+            } elseif ($user->info->sex == 'девушка') {
+                $users['g'][] = $data;
+            }
+        }
+        $boys = collect($users['b']);
+        $girls = collect($users['g']);
+
+        if ($boys->count() < 2 || $girls->count() < 1) {
+            TgSession::getApi()->sendMessage([
+                'chat_id' => TgSession::getParam('message.chat.id'),
+                'text' => 'Для МЖМ нехватает людей. Необходимо минимум 2 парня и 1 девушка в чате!',
+            ]);
+            $this->delMessage();
+            return $request;
+        }
+
+        $boys = $boys->random(2);
+        $girls = $girls->random();
+
+        $text = "<b>МЖМ занимаются " . Dict::rand(Dict::getWhere()) . ":</b>\n";
+        $text .= "\xF0\x9F\x92\x93 " . $boys->first()['link'] .
+            " \xF0\x9F\x92\x98 " . $girls['link'] .
+            " \xF0\x9F\x92\x95 " . $boys->last()['link'] .
+            " \xF0\x9F\x98\x98 ";
+        TgSession::getApi()->sendMessage([
+            'chat_id' => TgSession::getParam('message.chat.id'),
+            'text' => $text,
+        ]);
+        $this->delMessage();
+        $request['sexM2W1'] = true;
         return $request;
     }
 
+    /**
+     * @param $name
+     * @param $commands
+     * @param $arr
+     * @param $request
+     * @param string $template
+     * @return mixed
+     * @throws \Telegram\Bot\Exceptions\TelegramSDKException
+     */
     private function defCommand($name, $commands, $arr, $request, $template = '%user% %arr% %userreply% %where%')
     {
         if (
@@ -1019,6 +1223,9 @@ class Sex extends AbstractCommand
         return $request;
     }
 
+    /**
+     * @throws \Telegram\Bot\Exceptions\TelegramSDKException
+     */
     private function delMessage()
     {
         TgSession::getApi()->deleteMessage([

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace GarbuzIvan\TelegramBot\Commands;
 
 use Closure;
+use GarbuzIvan\TelegramBot\Dict;
 use GarbuzIvan\TelegramBot\TgSession;
 
 class Shop extends AbstractCommand
@@ -24,7 +25,7 @@ class Shop extends AbstractCommand
      */
     public function handler($request, Closure $next)
     {
-        if (isset($request['All']) || !in_array(TgSession::getCall(), [$this->name])) {
+        if (isset($request['shop']) || !in_array(TgSession::getCall(), ['/shop', '!магазин', 'магазин'])) {
             return $next($request);
         }
 
@@ -33,12 +34,32 @@ class Shop extends AbstractCommand
             $user = TgSession::getUser();
         }
 
+        $itemInfo = ':' . TgSession::getUser()->tg_id;
+
+        $inline_keyboard = [];
+        $lineCount = 0;
+        $line = [];
+        foreach (Dict::getShop() as $itemID => $item) {
+            $lineCount++;
+            $line[] = ['text' => $item['text'], 'callback_data' => $itemID . $itemInfo];
+            if ($lineCount == 3) {
+                $inline_keyboard[] = $line;
+                $line = [];
+                $lineCount = 0;
+            }
+        }
+
+        $keyboard = array("inline_keyboard" => $inline_keyboard);
+        $reply_markup = TgSession::getApi()->replyKeyboardMarkup($keyboard);
         TgSession::getApi()->sendMessage([
             'chat_id' => TgSession::getParam('message.chat.id'),
-            'text' => $user->link() . ': ' . $this->name . "\n" . TgSession::getCallParam(),
+            'text' => "Магазин\n\xF0\x9F\x92\xB0 Баланс " .
+                number_format(TgSession::getUser()->money, 0, '', ' ') .
+                "\xF0\x9F\x92\xB5",
+            'reply_markup' => $reply_markup,
         ]);
 
-        $request['Rank'] = true;
+        $request['shop'] = true;
         return $next($request);
     }
 }
