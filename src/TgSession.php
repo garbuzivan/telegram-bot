@@ -180,6 +180,7 @@ class TgSession
         if (is_null($text)) {
             return null;
         }
+        $text = str_replace(['/ ', '! '], null, $text);
         $str = explode(' ', $text, 2);
         $comand = mb_strtolower($str[0]);
         $comand = str_replace(self::$config->getBotNames(), null, $comand);
@@ -229,6 +230,8 @@ class TgSession
             return null;
         }
         $alias = [
+            '! ' => '!',
+            '/ ' => '/',
             'ян покажи' => '!покажи',
             'ян где' => '!где',
             'ян кто' => '!кто',
@@ -236,6 +239,6 @@ class TgSession
             '!команды' => '/help',
         ];
         $text = str_replace(array_keys($alias), array_values($alias), mb_strtolower($text));
-        return str_replace(['/ ', '! '], null, $text);
+        return $text;
     }
 }
