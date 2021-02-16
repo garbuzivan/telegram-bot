@@ -25,13 +25,20 @@ class Shop extends AbstractCommand
      */
     public function handler($request, Closure $next)
     {
-        if (isset($request['shop']) || !in_array(TgSession::getCall(), ['/shop', '!магазин', 'магазин'])) {
-            return $next($request);
-        }
+        $request = $this->pay($request);
+        $request = $this->view($request);
+        return $next($request);
+    }
 
-        $user = TgSession::getUserReply();
-        if (is_null($user)) {
-            $user = TgSession::getUser();
+    /**
+     * @param $request
+     * @return mixed
+     * @throws \Telegram\Bot\Exceptions\TelegramSDKException
+     */
+    private function view($request)
+    {
+        if (isset($request['shop']) || !in_array(TgSession::getCall(), ['/shop', '!магазин', 'магазин'])) {
+            return $request;
         }
 
         $itemInfo = ':' . TgSession::getUser()->tg_id;
@@ -41,7 +48,7 @@ class Shop extends AbstractCommand
         $line = [];
         foreach (Dict::getShop() as $itemID => $item) {
             $lineCount++;
-            $line[] = ['text' => $item['text'] . " \xF0\x9F\x92\xB5 " . $item['price'], 'callback_data' => $itemID . $itemInfo];
+            $line[] = ['text' => $item['text'] . " \xF0\x9F\x92\xB5 " . $item['price'], 'callback_data' => 'shop:' . $itemID . $itemInfo];
             if ($lineCount == 2 || in_array($itemID, [21, 22])) {
                 $inline_keyboard[] = $line;
                 $line = [];
@@ -61,6 +68,28 @@ class Shop extends AbstractCommand
         ]);
 
         $request['shop'] = true;
-        return $next($request);
+        return $request;
+    }
+
+    /**
+     * @param $request
+     * @return mixed
+     */
+    private function pay($request)
+    {
+        if (is_null(TgSession::getParam('callback_query.data'))) {
+            return $request;
+        }
+        $param = TgSession::getParam('callback_query.data');
+        $param = explode(':', $param);
+        if (!isset($param[1]) || $param[0] != 'shop') {
+            return $request;
+        }
+        file_put_contents('tttttttttttttt.php', json_encode(TgSession::getParam('callback_query')) . "\n\n", FILE_APPEND);
+        TgSession::getApi()->answerCallbackQuery([
+            'callback_query_id' => TgSession::getParam('callback_query.id'),
+            'text' => TgSession::getParam('callback_query.data'),
+        ]);
+        return $request;
     }
 }
