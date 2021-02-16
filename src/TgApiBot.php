@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace GarbuzIvan\TelegramBot;
 
+use Telegram\Bot\Exceptions\TelegramResponseException;
 use Telegram\Bot\Exceptions\TelegramSDKException;
 use Telegram\Bot\Objects\Message as MessageObject;
 
@@ -17,7 +18,11 @@ class TgApiBot extends \Telegram\Bot\Api
     public function sendMessage(array $params): MessageObject
     {
         $params['parse_mode'] = $params['parse_mode'] ?? 'HTML';
-        $message = parent::sendMessage($params);
+        try {
+            $message = parent::sendMessage($params);
+        } catch (TelegramResponseException|TelegramSDKException $e){
+            exit();
+        }
         $parser = new ParserBot();
         $parser->newMessage($message->toArray(), 0);
         return $message;

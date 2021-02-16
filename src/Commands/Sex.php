@@ -72,6 +72,9 @@ class Sex extends AbstractCommand
             return $request;
         }
         $text = "<b>Список команд ЯнШалун:</b>";
+        $text .= "\n<b>Ян покажи ...</b>";
+        $text .= "\n<b>Ян кто ...?</b>";
+        $text .= "\n<b>Ян где ...?</b>";
         $text .= "\n<b>!чпок</b>";
         $text .= "\n<b>!обнять</b>";
         $text .= "\n<b>!поцеловать</b>";
@@ -1071,7 +1074,13 @@ class Sex extends AbstractCommand
             return $request;
         }
 
-        $item = collect(TgSession::getUserReply()->inventory)->whereNotIn('inventory_id', [21,22])->random();
+//        if(TgSession::getUserReply()->inventory->whereNotIn('inventory_id', [21,22])->count() == 1){
+//            $item = TgSession::getUserReply()->inventory->whereNotIn('inventory_id', [21,22])->first();
+//        } else {
+//            $item = TgSession::getUserReply()->inventory->whereNotIn('inventory_id', [21,22])->random();
+//        }
+        file_put_contents(public_path('fffffffff.php'), json_encode(TgSession::getUserReply()->inventory), 8);
+        exit();
         $shopItems = Dict::getShop();
 
         TgSession::getApi()->sendMessage([
