@@ -31,7 +31,7 @@ class View extends AbstractCommand
             || is_null(TgSession::getCallParam())
             || mb_strlen(trim(TgSession::getCallParam())) == 0
         ) {
-            return $request;
+            return $next($request);
         }
 
         $fact = trim(TgSession::getCallParam());

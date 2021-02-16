@@ -36,8 +36,8 @@ class Where extends AbstractCommand
 
         TgSession::getApi()->sendMessage([
             'chat_id' => TgSession::getParam('message.chat.id'),
-            'text' => trim(str_replace('?', null, TgSession::getCallParam())) .
-                ' ' . Dict::rand(Dict::getWhere()) ."\n\n\xF0\x9F\x9A\xA9" . TgSession::getUser()->link(),
+            'text' => mb_convert_case(trim(str_replace('?', null, TgSession::getCallParam())), MB_CASE_TITLE, "UTF-8") .
+                ' ' . Dict::rand(Dict::getWhere()) . "\n\n\xF0\x9F\x9A\xA9" . TgSession::getUser()->link(),
         ]);
 
         TgSession::getApi()->deleteMessage([
