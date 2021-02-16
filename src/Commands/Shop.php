@@ -41,21 +41,22 @@ class Shop extends AbstractCommand
         $line = [];
         foreach (Dict::getShop() as $itemID => $item) {
             $lineCount++;
-            $line[] = ['text' => $item['text'], 'callback_data' => $itemID . $itemInfo];
-            if ($lineCount == 3) {
+            $line[] = ['text' => $item['text'] . " \xF0\x9F\x92\xB5 " . $item['price'], 'callback_data' => $itemID . $itemInfo];
+            if ($lineCount == 2 || in_array($itemID, [21, 22])) {
                 $inline_keyboard[] = $line;
                 $line = [];
                 $lineCount = 0;
             }
         }
+        $inline_keyboard[] = [['text' => "\xE2\x9D\x8C Закрыть магазин \xE2\x9D\x8C", 'callback_data' => 'exit' . $itemInfo]];
 
         $keyboard = array("inline_keyboard" => $inline_keyboard);
-        $reply_markup = TgSession::getApi()->replyKeyboardMarkup($keyboard);
+        $reply_markup = json_encode($keyboard);
         TgSession::getApi()->sendMessage([
             'chat_id' => TgSession::getParam('message.chat.id'),
-            'text' => "Магазин\n\xF0\x9F\x92\xB0 Баланс " .
+            'text' => "Магазин\n\xF0\x9F\x92\xB0 Баланс " . TgSession::getUser()->link() . " " .
                 number_format(TgSession::getUser()->money, 0, '', ' ') .
-                "\xF0\x9F\x92\xB5",
+                " \xF0\x9F\x92\xB5",
             'reply_markup' => $reply_markup,
         ]);
 
