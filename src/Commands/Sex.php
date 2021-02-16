@@ -169,7 +169,7 @@ class Sex extends AbstractCommand
 
         $arr = Dict::getWherePeople();
         foreach ($arr as $key => $value) {
-            $arr[$key] = 'целует в' . $value;
+            $arr[$key] = 'целует в ' . $value;
         }
         $arr = array_merge([
             'целует пуская слюни',
