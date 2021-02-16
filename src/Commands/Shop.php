@@ -6,6 +6,7 @@ namespace GarbuzIvan\TelegramBot\Commands;
 
 use Closure;
 use GarbuzIvan\TelegramBot\Dict;
+use GarbuzIvan\TelegramBot\Models\TgBotUser;
 use GarbuzIvan\TelegramBot\Models\TgBotUserInventory;
 use GarbuzIvan\TelegramBot\TgSession;
 
@@ -56,7 +57,7 @@ class Shop extends AbstractCommand
                 $lineCount = 0;
             }
         }
-        $inline_keyboard[] = [['text' => "\xE2\x9D\x8C Закрыть магазин \xE2\x9D\x8C", 'callback_data' => 'exit' . $itemInfo]];
+        $inline_keyboard[] = [['text' => "\xE2\x9D\x8C Закрыть магазин \xE2\x9D\x8C", 'callback_data' => 'shop:exit' . $itemInfo]];
 
         $keyboard = array("inline_keyboard" => $inline_keyboard);
         $reply_markup = json_encode($keyboard);
@@ -86,10 +87,25 @@ class Shop extends AbstractCommand
         if (!isset($param[1]) || $param[0] != 'shop') {
             return $request;
         }
+        if ($param[1] == 'exit') {
+            TgSession::getApi()->deleteMessage([
+                'chat_id' => TgSession::getParam('callback_query.message.chat.id'),
+                'message_id' => TgSession::getParam('callback_query.message.message_id'),
+            ]);
+        }
         $shopItems = Dict::getShop();
         if (!isset($shopItems[$param[1]])) {
             return $request;
         }
+        $user = TgBotUser::where('tg_id', TgSession::getParam('callback_query.from.id'))->first();
+        if ($shopItems[$param[1]]['price'] > $user->money) {
+            TgSession::getApi()->answerCallbackQuery([
+                'callback_query_id' => TgSession::getParam('callback_query.id'),
+                'text' => 'У Вас нет денег для покупки!',
+            ]);
+            return $request;
+        }
+        TgBotUser::where('tg_id', $user->tg_id)->update(['money' => $user->money - $shopItems[$param[1]]['price']]);
         TgBotUserInventory::create([
             'user_id' => TgSession::getParam('callback_query.from.id'),
             'inventory_id' => $param[1],
