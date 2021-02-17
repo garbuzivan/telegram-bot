@@ -401,7 +401,7 @@ class Rank extends AbstractCommand
         }
 
         $active = $activeList[TgSession::getCall()];
-        TgBotChatUsers::where('user_id', TgSession::getUser()->id)
+        TgBotChatUsers::where('user_id', TgSession::getUser()->tg_id)
             ->where('chat_id', TgSession::getParam('message.chat.id'))
             ->update(['active' => $active]);
 
