@@ -27,4 +27,9 @@ class TgBotChatUsers extends Model
     {
         return $this->hasOne('\GarbuzIvan\TelegramBot\Models\TgBotUser', 'tg_id', 'user_id');
     }
+
+    public function chat()
+    {
+        return $this->hasOne('\GarbuzIvan\TelegramBot\Models\TgBotChat', 'chat_id', 'chat_id');
+    }
 }
