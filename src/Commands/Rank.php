@@ -499,14 +499,18 @@ class Rank extends AbstractCommand
             if (isset($admins[$user->user_id])) {
                 return $request;
             }
-            TgSession::getApi()->sendMessage([
+            $m = TgSession::getApi()->sendMessage([
                 'chat_id' => TgSession::getParam('message.chat.id'),
-                'text' => TgSession::getUser()->link() . " хочет извиниться и признает власть \xF0\x9F\x91\x91 и могущество \xF0\x9F\x91\xBF АДМИНОВ. \nРазбанить может любой админ, командой !разбан",
+                'text' => TgSession::getUser()->link() . " просит прощение за свое поведение и признает вину.\nРазбанить может любой админ, командой !разбан",
             ]);
             sleep(5);
             TgSession::getApi()->deleteMessage([
                 'chat_id' => TgSession::getParam('message.chat.id'),
                 'message_id' => TgSession::getParam('message.message_id'),
+            ]);
+            TgSession::getApi()->deleteMessage([
+                'chat_id' => TgSession::getParam('message.chat.id'),
+                'message_id' => $m['message_id'],
             ]);
             $request['ban'] = true;
         }
