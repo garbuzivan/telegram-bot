@@ -72,6 +72,7 @@ class Sex extends AbstractCommand
             return $request;
         }
         $text = "<b>Список команд ЯнШалун:</b>";
+        $text .= "\n<b>@Все ....</b>";
         $text .= "\n<b>Ян покажи ...</b>";
         $text .= "\n<b>Ян кто ...?</b>";
         $text .= "\n<b>Ян где ...?</b>";
@@ -93,7 +94,7 @@ class Sex extends AbstractCommand
         $text .= "\n<b>!уложить</b>";
         $text .= "\n<b>!раб</b>";
         $text .= "\n<b>!танец</b>";
-        $text .= "\n<b>!раздеть</b>";
+        $text .= "\n<b>!раздеть</b> 100 \xF0\x9F\x92\xB8";
         $text .= "\n<b>!казнить</b>";
         $text .= "\n<b>!пара</b>";
         $text .= "\n<b>!массаж</b>";
@@ -102,6 +103,17 @@ class Sex extends AbstractCommand
         $text .= "\n<b>!мжм</b>";
         $text .= "\n<b>!комплимент</b>";
         $text .= "\n<b>!укусить</b>";
+        $text .= "\n\n";
+        $text .= "\n<b>!парень</b>";
+        $text .= "\n<b>!девушка</b>";
+        $text .= "\n<b>!писюн</b>";
+        $text .= "\n<b>!влагалище</b>";
+        $text .= "\n<b>!сиськи</b>";
+        $text .= "\n<b>!неиграю</b> - запрещает зазывале отмечать";
+        $text .= "\n<b>!играю</b> - разрешает зазывале отмечать";
+        $text .= "\n\n";
+        $text .= "\n<b>!бан</b> - блокирует отправку сообщений (админам)";
+        $text .= "\n<b>!разбан</b> - разблокирует отправку сообщений (админам)";
         TgSession::getApi()->sendMessage([
             'chat_id' => TgSession::getParam('message.chat.id'),
             'text' => $text . "\n\n\xF0\x9F\x9A\xA9 " . TgSession::getUser()->link(),
@@ -508,7 +520,7 @@ class Sex extends AbstractCommand
     {
         return $this->defCommand(
             'console',
-            ['/console', '!console', 'console'],
+            ['/console', '!утешить', 'утешить'],
             [
                 'нежно прижимает к себе и гладит',
                 'обнимает и целует',
