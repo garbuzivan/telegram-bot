@@ -9,3 +9,4 @@ Route::get('/message', '\GarbuzIvan\TelegramBot\Controllers\Web@message');
 Route::get('/botmessage', '\GarbuzIvan\TelegramBot\Controllers\Web@messageBot');
 Route::get('/chats', '\GarbuzIvan\TelegramBot\Controllers\Web@chats');
 Route::get('/users', '\GarbuzIvan\TelegramBot\Controllers\Web@users');
+Route::get('/user', '\GarbuzIvan\TelegramBot\Controllers\Web@user');
