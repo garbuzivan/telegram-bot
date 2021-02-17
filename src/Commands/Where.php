@@ -27,7 +27,7 @@ class Where extends AbstractCommand
     {
         if (
             isset($request['Where'])
-            || !in_array(TgSession::getCall(), ['/where', '!где', '!янгде', 'где'])
+            || !in_array(TgSession::getCall(), ['/where', '!где', '!янгде'])
             || is_null(TgSession::getCallParam())
             || mb_strlen(trim(TgSession::getCallParam())) == 0
         ) {

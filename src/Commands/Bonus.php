@@ -55,7 +55,7 @@ class Bonus extends AbstractCommand
         }
         TgBotTimer::where('user_id', TgSession::getUser()->tg_id)->where('param', 'bonus')->delete();
 
-        $randMax = rand(3000, 15000);
+        $randMax = rand(100, 3000);
         $itemInfo = ':' . TgSession::getUser()->tg_id . ':' . $randMax;
         $bombs = collect(range(1, 25))->random(14)->toArray();
 
@@ -114,7 +114,7 @@ class Bonus extends AbstractCommand
         }
         if ($param[4] == 1 || $param[2] == 1) {
             $user = TgBotUser::where('tg_id', $param[5])->first();
-            $balansAdd = intval($param[6] / $param[2]);
+            $balansAdd = intval($param[6] / ($param[4] > 0 ? $param[4] : 1));
             TgBotUser::where('tg_id', $param[5])->update(['money' => $user->money + $balansAdd]);
 
             TgBotTimer::create([

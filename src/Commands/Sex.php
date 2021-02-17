@@ -1074,13 +1074,11 @@ class Sex extends AbstractCommand
             return $request;
         }
 
-//        if(TgSession::getUserReply()->inventory->whereNotIn('inventory_id', [21,22])->count() == 1){
-//            $item = TgSession::getUserReply()->inventory->whereNotIn('inventory_id', [21,22])->first();
-//        } else {
-//            $item = TgSession::getUserReply()->inventory->whereNotIn('inventory_id', [21,22])->random();
-//        }
-        file_put_contents(public_path('fffffffff.php'), json_encode(TgSession::getUserReply()->inventory), 8);
-        exit();
+        try {
+            $item = TgSession::getUserReply()->inventory->whereNotIn('inventory_id', [21,22])->random();
+        } catch (\InvalidArgumentException $e){
+            exit();
+        }
         $shopItems = Dict::getShop();
 
         TgSession::getApi()->sendMessage([

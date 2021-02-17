@@ -28,7 +28,7 @@ class Who extends AbstractCommand
     {
         if (
             isset($request['Who'])
-            || !in_array(TgSession::getCall(), ['/who', '!кто', '!янкто', 'кто'])
+            || !in_array(TgSession::getCall(), ['/who', '!кто', '!янкто'])
             || is_null(TgSession::getCallParam())
             || mb_strlen(trim(TgSession::getCallParam())) == 0
         ) {
