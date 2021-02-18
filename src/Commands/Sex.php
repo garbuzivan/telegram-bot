@@ -783,7 +783,7 @@ class Sex extends AbstractCommand
             return $request;
         }
 
-        $why = [
+        $whyBoy = [
             'прошептал на ушко, что %girl% %arr%',
             'отправил цветы и открытку в которой написано, что %girl% %arr%',
             'написал на снегу, что %girl% %arr%',
@@ -791,7 +791,7 @@ class Sex extends AbstractCommand
             'приготовил романтический ужин и на блюде выложил, что %girl% %arr%',
             'отправил хор который под окнами поет, что %girl% %arr%',
         ];
-        $whyBoy = [
+        $why = [
             'прошептала на ушко, что %girl% %arr%',
             'позвонила %girl% и сказала %arr%',
             'отправила СМС %girl% с текстов: ты %arr%',
@@ -950,7 +950,8 @@ class Sex extends AbstractCommand
             'compliment',
             ['/compliment', '!комплимент', 'комплимент'],
             $listCompliment,
-            $request
+            $request,
+            '%user% %arr% %userreply%'
         );
     }
 
