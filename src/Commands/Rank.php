@@ -460,7 +460,7 @@ class Rank extends AbstractCommand
         TgSession::getApi()->sendMessage([
             'chat_id' => TgSession::getParam('message.chat.id'),
             'text' => "\xF0\x9F\x90\x92 " . TgSession::getUser()->link() .
-                ' <b>' . ($ban == 0 ? 'разблокировал' : 'наказал') .
+                ' <b>' . ($ban == 0 ? 'разблокировал' : 'наказал') . ' ' .
                 TgSession::getUserReply()->link() . "!</b> \xF0\x9F\x98\x9C!",
         ]);
 

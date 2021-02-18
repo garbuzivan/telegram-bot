@@ -541,7 +541,7 @@ class Sex extends AbstractCommand
     {
         return $this->defCommand(
             'drink',
-            ['/drink', '!минет', 'минет'],
+            ['/drink', '!напоить', 'напоить', '!налить', 'налить', '!споить', 'споить'],
             [
                 'наливает водку',
                 'наливает пиво',
@@ -978,7 +978,7 @@ class Sex extends AbstractCommand
     private function surprise($request)
     {
         return $this->defCommand(
-            'slave',
+            'surprise',
             ['/surprise', '!сюрприз', 'сюрприз'],
             [
                 'дарит крем от целлюлита',
