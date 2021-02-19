@@ -265,79 +265,85 @@ class Sex extends AbstractCommand
             return $request;
         }
 
-        // не определен член Юзер1
-        if (
-            in_array(TgSession::getUser()->sex, ['парень'])
-            && TgSession::getUser()->penis < 3
-        ) {
-            TgSession::getApi()->sendMessage([
-                'chat_id' => TgSession::getParam('message.chat.id'),
-                'text' => 'Для занятия сексом необходимо определеить размер члена для ' . TgSession::getUser()->link() . '!',
-            ]);
-            $this->delMessage();
-            return $request;
+        if (TgSession::getUser()->sex != TgSession::getUserReply()->sex) {
+            // не определен член Юзер1
+            if (
+                in_array(TgSession::getUser()->sex, ['парень'])
+                && TgSession::getUser()->penis < 3
+            ) {
+                TgSession::getApi()->sendMessage([
+                    'chat_id' => TgSession::getParam('message.chat.id'),
+                    'text' => 'Для занятия сексом необходимо определеить размер члена для ' . TgSession::getUser()->link() . '!',
+                ]);
+                $this->delMessage();
+                return $request;
+            }
+
+            // не определен влагалища Юзер1
+            if (
+                in_array(TgSession::getUser()->sex, ['девушка'])
+                && TgSession::getUser()->vagina < 3
+            ) {
+                TgSession::getApi()->sendMessage([
+                    'chat_id' => TgSession::getParam('message.chat.id'),
+                    'text' => 'Для занятия сексом необходимо определеить размер влагалища для ' . TgSession::getUser()->link() . '!',
+                ]);
+                $this->delMessage();
+                return $request;
+            }
+
+            // не определен член Юзер2
+            if (
+                in_array(TgSession::getUserReply()->sex, ['парень'])
+                && TgSession::getUserReply()->penis < 3
+            ) {
+                TgSession::getApi()->sendMessage([
+                    'chat_id' => TgSession::getParam('message.chat.id'),
+                    'text' => 'Для занятия сексом необходимо определеить размер члена для ' . TgSession::getUserReply()->link() . '!',
+                ]);
+                $this->delMessage();
+                return $request;
+            }
+
+            // не определен влагалища Юзер2
+            if (
+                in_array(TgSession::getUserReply()->sex, ['девушка'])
+                && TgSession::getUserReply()->vagina < 3
+            ) {
+                TgSession::getApi()->sendMessage([
+                    'chat_id' => TgSession::getParam('message.chat.id'),
+                    'text' => 'Для занятия сексом необходимо определеить размер влагалища для ' . TgSession::getUserReply()->link() . '!',
+                ]);
+                $this->delMessage();
+                return $request;
+            }
+
+            // несовместимость
+            $penis = TgSession::getUserReply()->sex == 'девушка' ? TgSession::getUser()->penis : TgSession::getUserReply()->penis;
+            $vagina = TgSession::getUserReply()->sex == 'девушка' ? TgSession::getUserReply()->vagina : TgSession::getUser()->vagina;
+            if (
+                ($penis > $vagina && $penis - $vagina > 5)
+                || ($penis < $vagina && $vagina - $penis > 5)
+            ) {
+                TgSession::getApi()->sendMessage([
+                    'chat_id' => TgSession::getParam('message.chat.id'),
+                    'text' => TgSession::getUser()->link() . ' и ' . TgSession::getUserReply()->link() .
+                        ' не могут заняться сексом, несовместимость размеров половых органов!',
+                ]);
+                $this->delMessage();
+                return $request;
+            }
         }
 
-        // не определен влагалища Юзер1
-        if (
-            in_array(TgSession::getUser()->sex, ['девушка'])
-            && TgSession::getUser()->vagina < 3
-        ) {
-            TgSession::getApi()->sendMessage([
-                'chat_id' => TgSession::getParam('message.chat.id'),
-                'text' => 'Для занятия сексом необходимо определеить размер влагалища для ' . TgSession::getUser()->link() . '!',
-            ]);
-            $this->delMessage();
-            return $request;
-        }
-
-        // не определен член Юзер2
-        if (
-            in_array(TgSession::getUserReply()->sex, ['парень'])
-            && TgSession::getUserReply()->penis < 3
-        ) {
-            TgSession::getApi()->sendMessage([
-                'chat_id' => TgSession::getParam('message.chat.id'),
-                'text' => 'Для занятия сексом необходимо определеить размер члена для ' . TgSession::getUserReply()->link() . '!',
-            ]);
-            $this->delMessage();
-            return $request;
-        }
-
-        // не определен влагалища Юзер2
-        if (
-            in_array(TgSession::getUserReply()->sex, ['девушка'])
-            && TgSession::getUserReply()->vagina < 3
-        ) {
-            TgSession::getApi()->sendMessage([
-                'chat_id' => TgSession::getParam('message.chat.id'),
-                'text' => 'Для занятия сексом необходимо определеить размер влагалища для ' . TgSession::getUserReply()->link() . '!',
-            ]);
-            $this->delMessage();
-            return $request;
-        }
-
-        // несовместимость
-        $penis = TgSession::getUserReply()->sex == 'девушка' ? TgSession::getUser()->penis : TgSession::getUserReply()->penis;
-        $vagina = TgSession::getUserReply()->sex == 'девушка' ? TgSession::getUserReply()->vagina : TgSession::getUser()->vagina;
-        if (
-            ($penis > $vagina && $penis - $vagina > 5)
-            || ($penis < $vagina && $vagina - $penis > 5)
-        ) {
-            TgSession::getApi()->sendMessage([
-                'chat_id' => TgSession::getParam('message.chat.id'),
-                'text' => TgSession::getUser()->link() . ' и ' . TgSession::getUserReply()->link() .
-                    ' не могут заняться сексом, несовместимость размеров половых органов!',
-            ]);
-            $this->delMessage();
-            return $request;
-        }
+        $url = url('public/media/s/' . rand(1, 70) . '.jpg');
 
         $text = null;
         if (TgSession::getUser()->sex == TgSession::getUserReply()->sex && TgSession::getUser()->sex == 'парень') {
             $text = 'Два голубка ';
+            $url = url('public/media/g/' . rand(1, 6) . '.gif');
         } elseif (TgSession::getUser()->sex == TgSession::getUserReply()->sex && TgSession::getUser()->sex == 'девушка') {
             $text = 'Два лесбухи ';
+            $url = url('public/media/l/' . rand(1, 8) . '.gif');
         }
         $text .= TgSession::getUser()->link() . ' и ' . TgSession::getUserReply()->link() . ' занялись сексом ' .
             Dict::rand(Dict::getWhere());
@@ -347,13 +353,24 @@ class Sex extends AbstractCommand
             'text' => $text,
         ]);
 
-        $url = url('public/media/s/' . rand(1, 70) . '.jpg');
         $fact = TgSession::getUser()->fullname() . ' и ' . TgSession::getUserReply()->fullname();
-        TgSession::getApi()->sendPhoto([
-            'chat_id' => TgSession::getParam('message.chat.id'),
-            'photo' => InputFile::create($url, $fact),
-            'caption' => $fact,
-        ]);
+
+        if (TgSession::getUser()->sex == TgSession::getUserReply()->sex) {
+            $file = InputFile::create($url, $fact);
+            TgSession::getApi()->sendPhoto([
+                'chat_id' => TgSession::getParam('message.chat.id'),
+                'photo' => $file,
+                'caption' => $fact,
+            ]);
+        } else {
+            $file = InputFile::create($url, $fact);
+            TgSession::getApi()->sendPhoto([
+                'chat_id' => TgSession::getParam('message.chat.id'),
+                'photo' => $file,
+                'caption' => $fact,
+            ]);
+        }
+
 
         $this->delMessage();
         $request['chpok'] = true;
@@ -794,7 +811,7 @@ class Sex extends AbstractCommand
         $why = [
             'прошептала на ушко, что %girl% %arr%',
             'позвонила %girl% и сказала %arr%',
-            'отправила СМС %girl% с текстов: ты %arr%',
+            'отправила СМС %girl% с текстом: ты %arr%',
             'сделал татуировку на которой написала, что %girl% %arr%',
             'приготовила романтический ужин и на блюде выложила, что %girl% %arr%',
             'сказала что хочет детей от %girl%',
@@ -951,7 +968,7 @@ class Sex extends AbstractCommand
             ['/compliment', '!комплимент', 'комплимент'],
             $listCompliment,
             $request,
-            '%user% %arr% %userreply%'
+            '%arr%'
         );
     }
 
@@ -1066,7 +1083,7 @@ class Sex extends AbstractCommand
             return $request;
         }
 
-        if(TgSession::getUserReply()->inventory->whereNotIn('inventory_id', [21,22])->count() == 0){
+        if (TgSession::getUserReply()->inventory->whereNotIn('inventory_id', [21, 22])->count() == 0) {
             TgSession::getApi()->sendMessage([
                 'chat_id' => TgSession::getParam('message.chat.id'),
                 'text' => TgSession::getUserReply()->link() .
@@ -1074,7 +1091,7 @@ class Sex extends AbstractCommand
             ]);
         }
 
-        if(TgSession::getUser()->money < 100){
+        if (TgSession::getUser()->money < 100) {
             $m = TgSession::getApi()->sendMessage([
                 'chat_id' => TgSession::getParam('message.chat.id'),
                 'text' => TgSession::getUser()->link() . ' бомж и не может ничего снять или ограбить!',
@@ -1088,8 +1105,8 @@ class Sex extends AbstractCommand
         }
 
         try {
-            $item = TgSession::getUserReply()->inventory->whereNotIn('inventory_id', [21,22])->random();
-        } catch (\InvalidArgumentException $e){
+            $item = TgSession::getUserReply()->inventory->whereNotIn('inventory_id', [21, 22])->random();
+        } catch (\InvalidArgumentException $e) {
             exit();
         }
         $shopItems = Dict::getShop();
